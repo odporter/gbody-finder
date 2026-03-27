@@ -1,19 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, ChevronRight, Car, Zap, Users, Shield, Package, Wrench, ArrowRight, Filter, Grid3X3, List } from 'lucide-react';
+import { Search, MapPin, ChevronRight, Car, Zap, Users, Shield, Package, Wrench, ArrowRight, Calculator, Settings, Gauge } from 'lucide-react';
 
-// G-Body Models with logos/images
+// G-Body Models with real images and logos
 const GBODY_MODELS = [
   {
     id: 'monte-carlo',
     name: 'Monte Carlo',
     years: '1978-1988',
     subtitle: 'SS • Aerocoupe • LS',
-    image: '/images/monte-carlo-hero.jpg',
-    logo: '🏎️',
-    color: 'from-red-600 to-orange-600',
+    image: '/images/cars/monte-carlo-ss.jpg',
+    logo: '/images/logos/monte-carlo-logo.png',
     count: 1247,
   },
   {
@@ -21,9 +20,8 @@ const GBODY_MODELS = [
     name: 'Grand National',
     years: '1982-1987',
     subtitle: 'GN • T-Type • Turbo T',
-    image: '/images/grand-national-hero.jpg',
-    logo: '🖤',
-    color: 'from-gray-900 to-gray-700',
+    image: '/images/cars/grand-national-2.jpg',
+    logo: '/images/logos/buick-logo.png',
     count: 892,
   },
   {
@@ -31,9 +29,8 @@ const GBODY_MODELS = [
     name: 'Cutlass Supreme',
     years: '1978-1988',
     subtitle: '442 • Salon • Brougham',
-    image: '/images/cutlass-hero.jpg',
-    logo: '🔥',
-    color: 'from-amber-500 to-yellow-600',
+    image: '/images/cars/cutlass-442.jpg',
+    logo: '/images/logos/chevrolet-logo.jpg', // Olds logo
     count: 1089,
   },
   {
@@ -41,9 +38,8 @@ const GBODY_MODELS = [
     name: 'Buick Regal',
     years: '1978-1987',
     subtitle: 'Limited • T-Type • GS',
-    image: '/images/regal-hero.jpg',
-    logo: '⚡',
-    color: 'from-blue-600 to-indigo-700',
+    image: '/images/cars/regal-t-type.jpg',
+    logo: '/images/logos/buick-logo.png',
     count: 756,
   },
   {
@@ -51,45 +47,30 @@ const GBODY_MODELS = [
     name: 'El Camino',
     years: '1978-1987',
     subtitle: 'SS • Conquista • Royal',
-    image: '/images/el-camino-hero.jpg',
-    logo: '🛻',
-    color: 'from-green-600 to-emerald-700',
+    image: '/images/cars/el-camino.jpg',
+    logo: '/images/logos/chevrolet-logo.jpg',
     count: 634,
   },
   {
     id: 'malibu',
-    name: 'Chevrolet Malibu',
+    name: 'Chevy Malibu',
     years: '1978-1983',
     subtitle: 'Classic • Landau • Sport',
-    image: '/images/malibu-hero.jpg',
-    logo: '🚗',
-    color: 'from-purple-600 to-violet-700',
+    image: '/images/cars/malibu.jpg',
+    logo: '/images/logos/chevrolet-logo.jpg',
     count: 423,
   },
   {
     id: 'grand-prix',
-    name: 'Pontiac Grand Prix',
+    name: 'Grand Prix',
     years: '1978-1987',
     subtitle: 'LJ • SJ • Turbo',
-    image: '/images/grand-prix-hero.jpg',
-    logo: ' Pontiac',
-    color: 'from-gray-600 to-slate-700',
+    image: '/images/cars/grand-prix.jpg',
+    logo: '/images/logos/pontiac-logo.svg',
     count: 567,
-  },
-  {
-    id: 'parts',
-    name: 'Parts & Accessories',
-    years: 'All Years',
-    subtitle: 'Engines • Body • Interior',
-    image: '/images/parts-hero.jpg',
-    logo: '🔧',
-    color: 'from-zinc-600 to-zinc-800',
-    count: 3421,
-    isParts: true,
   },
 ];
 
-// Sample listings
 const FEATURED_LISTINGS = [
   {
     id: '1',
@@ -100,9 +81,8 @@ const FEATURED_LISTINGS = [
     model: 'Monte Carlo SS',
     engine: '305 V8',
     mileage: 45000,
-    image: 'https://images.unsplash.com/photo-1583121274602-3e2820c6cd88?w=600&h=400&fit=crop',
+    image: '/images/cars/monte-carlo-ss.jpg',
     condition: 'Excellent',
-    seller: 'Verified Dealer',
     isFeatured: true,
   },
   {
@@ -114,24 +94,31 @@ const FEATURED_LISTINGS = [
     model: 'Grand National',
     engine: '3.8L Turbo V6',
     mileage: 62000,
-    image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop',
+    image: '/images/cars/grand-national-2.jpg',
     condition: 'Show Quality',
-    seller: 'Private Seller',
     isFeatured: true,
   },
   {
     id: '3',
-    title: '1984 Oldsmobile 442',
+    title: '1983 Hurst Olds 442',
     price: 38000,
     location: 'Charlotte, NC',
-    year: 1984,
+    year: 1983,
     model: '442',
     engine: '350 V8',
     mileage: 42000,
-    image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&h=400&fit=crop',
+    image: '/images/cars/cutlass-442.jpg',
     condition: 'Excellent',
-    seller: 'Verified Dealer',
   },
+];
+
+const BUILD_ENGINES = [
+  { name: 'LS3 6.2L', hp: '430-500', cost: '$8,000-15,000', popular: true },
+  { name: 'LS1 5.7L', hp: '305-350', cost: '$4,000-8,000', popular: false },
+  { name: 'LS7 7.0L', hp: '505-580', cost: '$15,000-25,000', popular: false },
+  { name: '350 Small Block', hp: '300-400', cost: '$3,000-7,000', popular: true },
+  { name: '383 Stroker', hp: '400-500', cost: '$5,000-12,000', popular: false },
+  { name: '454 Big Block', hp: '450-600', cost: '$6,000-15,000', popular: false },
 ];
 
 const STATS = [
@@ -142,124 +129,167 @@ const STATS = [
 ];
 
 export default function Home() {
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
-      {/* Hero Section with Background */}
-      <section className="relative min-h-[90vh] overflow-hidden">
-        {/* Background Image */}
+      {/* Hero Section */}
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background with gradient */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[var(--gb-dark)]" />
           <img 
-            src="https://images.unsplash.com/photo-1583121274602-3e2820c6cd88?w=1920&h=1080&fit=crop"
+            src="/images/cars/monte-carlo-ss.jpg"
             alt="G-Body Classic"
-            className="w-full h-full object-cover opacity-40"
+            className="w-full h-full object-cover opacity-20"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-[var(--gb-dark)]" />
         </div>
         
-        {/* Animated Grid Background */}
-        <div className="absolute inset-0 z-0 opacity-20">
-          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-[length:60px_60px]" />
-        </div>
+        {/* Grid overlay */}
+        <div className="absolute inset-0 z-0 opacity-10 bg-[length:60px_60px]" style={{ backgroundImage: 'url("/grid.svg")' || 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)' }} />
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-          {/* Logo/Brand */}
-          <div className="text-center mb-12">
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-2">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-20">
+          {/* Logo */}
+          <div className="text-center mb-10">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight">
               <span className="chrome-text">G-BODY</span>
+              <span className="text-white ml-2">FINDER</span>
             </h1>
-            <p className="text-2xl md:text-3xl font-light text-[var(--gb-text-secondary)]">
-              FINDER
+            <p className="text-[var(--gb-text-muted)] text-lg mt-2">
+              The #1 Marketplace for G-Body Classics
             </p>
           </div>
 
-          {/* Tagline */}
-          <div className="text-center mb-16">
-            <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto">
-              The ultimate marketplace for <span className="text-orange-500 font-semibold">Monte Carlos, Grand Nationals, Cutlasses, Regals, El Caminos, Malibus & Grand Prix</span>
-            </p>
-            <p className="text-[var(--gb-text-muted)] mt-2">1978-1988 G-Body Classics</p>
-          </div>
-
-          {/* Model Selector - Logo Buttons */}
-          <div className="mb-16">
-            <h3 className="text-center text-sm font-medium text-[var(--gb-text-muted)] uppercase tracking-wider mb-6">
+          {/* Model Cards */}
+          <div className="mb-12">
+            <h3 className="text-center text-xs font-semibold text-[var(--gb-text-muted)] uppercase tracking-widest mb-6">
               Select Your G-Body
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
-              {GBODY_MODELS.slice(0, 7).map((model) => (
-                <button
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
+              {GBODY_MODELS.map((model) => (
+                <Link
                   key={model.id}
-                  onClick={() => setSelectedModel(model.id)}
-                  className={`group relative overflow-hidden rounded-xl p-6 border-2 transition-all ${
-                    selectedModel === model.id 
-                      ? 'border-orange-500 bg-orange-500/10' 
-                      : 'border-[var(--gb-border)] bg-[var(--gb-surface)] hover:border-orange-500/50'
-                  }`}
+                  href={`/listings?model=${model.id}`}
+                  className="group relative overflow-hidden rounded-xl bg-[var(--gb-surface)] border border-[var(--gb-border)] hover:border-orange-500 transition-all duration-300"
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${model.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
-                  <div className="relative z-10 text-center">
-                    <div className="text-4xl mb-2">{model.logo}</div>
-                    <h4 className="font-bold text-sm">{model.name}</h4>
+                  <div className="aspect-[4/3] relative overflow-hidden">
+                    <img 
+                      src={model.image} 
+                      alt={model.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <img src={model.logo} alt="" className="w-5 h-5 object-contain opacity-80" />
+                      <h4 className="font-bold text-sm text-white">{model.name}</h4>
+                    </div>
                     <p className="text-xs text-[var(--gb-text-muted)]">{model.years}</p>
-                    <div className="mt-2 inline-flex items-center gap-1 text-xs text-orange-500">
-                      <span>{model.count.toLocaleString()}</span>
+                    <div className="mt-1 flex items-center gap-1 text-xs">
+                      <span className="text-orange-500 font-semibold">{model.count.toLocaleString()}</span>
                       <span className="text-[var(--gb-text-muted)]">listed</span>
                     </div>
                   </div>
-                </button>
+                </Link>
               ))}
-            </div>
-            
-            {/* Parts Button */}
-            <div className="mt-4 flex justify-center">
-              <button
-                onClick={() => setSelectedModel('parts')}
-                className={`group relative overflow-hidden rounded-xl px-12 py-4 border-2 transition-all flex items-center gap-3 ${
-                  selectedModel === 'parts'
-                    ? 'border-orange-500 bg-orange-500/10'
-                    : 'border-[var(--gb-border)] bg-[var(--gb-surface)] hover:border-orange-500/50'
-                }`}
+              
+              {/* Parts Card */}
+              <Link
+                href="/parts"
+                className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-[var(--gb-border)] hover:border-orange-500 transition-all duration-300"
               >
-                <Wrench size={24} className="text-orange-500" />
-                <div className="text-left">
-                  <h4 className="font-bold">Parts & Accessories</h4>
-                  <p className="text-xs text-[var(--gb-text-muted)]">8,234 parts available</p>
+                <div className="aspect-[4/3] flex items-center justify-center">
+                  <Wrench size={48} className="text-orange-500/50 group-hover:text-orange-500 transition-colors" />
                 </div>
-                <ArrowRight size={20} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
-              </button>
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h4 className="font-bold text-sm text-white">Parts & Accessories</h4>
+                  <p className="text-xs text-[var(--gb-text-muted)]">All Years</p>
+                  <div className="mt-1 flex items-center gap-1 text-xs">
+                    <span className="text-orange-500 font-semibold">8,234</span>
+                    <span className="text-[var(--gb-text-muted)]">parts</span>
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
 
-          {/* Quick Search */}
-          <div className="max-w-2xl mx-auto mb-12">
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mb-10">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--gb-text-muted)]" size={20} />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--gb-text-muted)]" size={22} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by model, year, location..."
-                className="w-full pl-12 pr-4 py-4 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-xl text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-lg"
+                placeholder="Search by model, year, location, engine..."
+                className="w-full pl-14 pr-32 py-5 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-2xl text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-lg"
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors">
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors">
                 Search
               </button>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
             {STATS.map((stat) => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="text-center p-4 bg-[var(--gb-surface)]/50 backdrop-blur rounded-xl border border-[var(--gb-border)]">
                 <stat.icon className="mx-auto mb-2 text-orange-500" size={24} />
-                <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-xl md:text-2xl font-bold">{stat.value}</div>
                 <div className="text-xs text-[var(--gb-text-muted)]">{stat.label}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Build Calculator */}
+      <section className="py-16 bg-[var(--gb-surface)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <Calculator className="mx-auto mb-4 text-orange-500" size={40} />
+            <h2 className="text-3xl font-bold">Build Calculator</h2>
+            <p className="text-[var(--gb-text-secondary)] mt-2">Estimate HP, torque, and cost for your G-Body build</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {BUILD_ENGINES.map((engine) => (
+              <div 
+                key={engine.name}
+                className={`p-5 rounded-xl border ${engine.popular ? 'border-orange-500 bg-orange-500/5' : 'border-[var(--gb-border)] bg-[var(--gb-dark)]'}`}
+              >
+                {engine.popular && (
+                  <span className="text-xs text-orange-500 font-semibold">POPULAR</span>
+                )}
+                <h3 className="font-bold text-lg mt-1">{engine.name}</h3>
+                <div className="mt-3 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-[var(--gb-text-muted)]">Horsepower</span>
+                    <span className="font-semibold">{engine.hp} HP</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--gb-text-muted)]">Est. Cost</span>
+                    <span className="font-semibold text-orange-500">{engine.cost}</span>
+                  </div>
+                </div>
+                <Link 
+                  href={`/build-calculator?engine=${engine.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 py-2 rounded-lg bg-[var(--gb-surface)] border border-[var(--gb-border)] hover:border-orange-500 transition-colors text-sm"
+                >
+                  <Settings size={16} />
+                  Configure Build
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/build-calculator" className="gb-btn gb-btn-primary">
+              <Calculator size={18} className="mr-2" />
+              Full Build Calculator
+            </Link>
           </div>
         </div>
       </section>
@@ -271,7 +301,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold">Featured Listings</h2>
             <p className="text-[var(--gb-text-secondary)] mt-1">Hand-picked G-Bodies ready for a new home</p>
           </div>
-          <Link href="/listings" className="gb-btn gb-btn-secondary">
+          <Link href="/listings" className="gb-btn gb-btn-secondary hidden md:flex">
             View All <ChevronRight size={18} />
           </Link>
         </div>
@@ -287,27 +317,23 @@ export default function Home() {
                 />
                 {listing.isFeatured && (
                   <div className="absolute top-3 left-3">
-                    <span className="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">
+                    <span className="px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded-full">
                       FEATURED
                     </span>
                   </div>
                 )}
                 <div className="absolute top-3 right-3">
-                  <span className="px-2 py-1 bg-black/80 text-white text-xs font-semibold rounded">
+                  <span className="px-2 py-1 bg-black/80 backdrop-blur text-white text-xs font-semibold rounded">
                     {listing.condition}
                   </span>
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-5">
                 <h3 className="font-semibold text-lg mb-1 truncate">{listing.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-[var(--gb-text-muted)] mb-2">
                   <span>{listing.year}</span>
                   <span>•</span>
                   <span>{listing.engine}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-[var(--gb-text-muted)] mb-3">
-                  <MapPin size={14} />
-                  {listing.location}
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-orange-500">
@@ -324,50 +350,50 @@ export default function Home() {
       </section>
 
       {/* Why G-Body Finder */}
-      <section className="bg-[var(--gb-surface)] py-16">
+      <section className="py-16 bg-[var(--gb-dark)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Why G-Body Finder?</h2>
             <p className="text-[var(--gb-text-secondary)] max-w-2xl mx-auto">
-              We aggregate listings from across the web — Facebook Marketplace, Craigslist, eBay, Bring a Trailer, and more — so you can find your perfect G-Body in one place.
+              We aggregate from <strong>everywhere</strong> — Facebook Marketplace, Craigslist, eBay, Bring a Trailer, Cars.com, Autotrader, forums, and more.
             </p>
           </div>
           
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-xl">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-orange-500/10 flex items-center justify-center">
-                <Search className="text-orange-500" size={24} />
+            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                <Search className="text-orange-500" size={28} />
               </div>
-              <h3 className="font-semibold mb-2">All Sources</h3>
+              <h3 className="font-semibold mb-2 text-lg">All Sources</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Facebook, Craigslist, eBay, Bring a Trailer, forums — all in one search.
+                Facebook, Craigslist, eBay, BAT, Cars.com, Autotrader, forums — all in one search.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-xl">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-orange-500/10 flex items-center justify-center">
-                <Shield className="text-orange-500" size={24} />
+            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                <Shield className="text-orange-500" size={28} />
               </div>
-              <h3 className="font-semibold mb-2">Verified Sellers</h3>
+              <h3 className="font-semibold mb-2 text-lg">Verified Sellers</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                We verify dealers and private sellers so you can buy with confidence.
+                We verify dealers and private sellers for safe transactions.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-xl">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-orange-500/10 flex items-center justify-center">
-                <Wrench className="text-orange-500" size={24} />
+            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                <Wrench className="text-orange-500" size={28} />
               </div>
-              <h3 className="font-semibold mb-2">Parts Network</h3>
+              <h3 className="font-semibold mb-2 text-lg">Parts Network</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Engine, body, interior — find parts from trusted sellers nationwide.
+                Summit, Jegs, RockAuto, Classic Industries, Mikes Montes — find parts fast.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-xl">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-orange-500/10 flex items-center justify-center">
-                <Zap className="text-orange-500" size={24} />
+            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                <Gauge className="text-orange-500" size={28} />
               </div>
-              <h3 className="font-semibold mb-2">Instant Alerts</h3>
+              <h3 className="font-semibold mb-2 text-lg">Build Calculator</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Get notified the moment your dream G-Body hits the market.
+                Estimate HP, torque, and costs for LS swaps, 350 builds, and more.
               </p>
             </div>
           </div>
@@ -375,17 +401,18 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-orange-600 to-red-700">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Find Your G-Body?</h2>
-          <p className="text-white/80 mb-8">
-            Join the community. Browse listings. Get alerts. Find your classic.
+      <section className="py-20 bg-gradient-to-r from-orange-600 via-red-600 to-orange-700 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[length:60px_60px]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)' }} />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold text-white mb-4">Find Your G-Body Today</h2>
+          <p className="text-white/80 text-lg mb-8">
+            Join thousands of enthusiasts. Browse listings. Get alerts. Build your dream.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup" className="gb-btn bg-white text-orange-600 hover:bg-gray-100">
+            <Link href="/signup" className="gb-btn bg-white text-orange-600 hover:bg-gray-100 text-lg px-8 py-4">
               Create Free Account
             </Link>
-            <Link href="/listings" className="gb-btn bg-transparent text-white border-2 border-white hover:bg-white/10">
+            <Link href="/listings" className="gb-btn bg-transparent text-white border-2 border-white hover:bg-white/10 text-lg px-8 py-4">
               Browse All Listings
             </Link>
           </div>
@@ -401,7 +428,7 @@ export default function Home() {
                 <span className="chrome-text">G-BODY</span> FINDER
               </h3>
               <p className="text-sm text-[var(--gb-text-muted)]">
-                The ultimate marketplace for G-Body classics. 1978-1988 Monte Carlo, Grand National, Cutlass, Regal, El Camino, Malibu & Grand Prix.
+                The #1 marketplace for G-Body classics. Monte Carlo, Grand National, Cutlass, Regal, El Camino, Malibu & Grand Prix.
               </p>
             </div>
             <div>
@@ -417,10 +444,10 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-[var(--gb-text-secondary)]">
+                <li><Link href="/build-calculator" className="hover:text-orange-500">Build Calculator</Link></li>
                 <li><Link href="/buyers-guide" className="hover:text-orange-500">Buyer's Guide</Link></li>
                 <li><Link href="/price-guide" className="hover:text-orange-500">Price Guide</Link></li>
                 <li><Link href="/shipping" className="hover:text-orange-500">Shipping</Link></li>
-                <li><Link href="/community" className="hover:text-orange-500">Community</Link></li>
               </ul>
             </div>
             <div>
