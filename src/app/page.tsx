@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Search, ChevronRight, Car, Zap, Users, Shield, Package, Wrench, Calculator, Settings, Gauge, Cog, Timer, TrendingUp } from 'lucide-react';
 
-// G-Body Models with real images and logos
+// G-Body Models with real images
 const GBODY_MODELS = [
   {
     id: 'monte-carlo',
@@ -12,7 +12,6 @@ const GBODY_MODELS = [
     years: '1978-1988',
     subtitle: 'SS • Aerocoupe • LS',
     image: '/images/cars/monte-carlo-ss.jpg',
-    logo: '/images/logos/monte-carlo-logo.png',
     count: 1247,
   },
   {
@@ -21,7 +20,6 @@ const GBODY_MODELS = [
     years: '1982-1987',
     subtitle: 'GN • T-Type • Turbo T',
     image: '/images/cars/grand-national.jpg',
-    logo: '/images/logos/buick-logo.png',
     count: 892,
   },
   {
@@ -30,7 +28,6 @@ const GBODY_MODELS = [
     years: '1978-1988',
     subtitle: '442 • Salon • Brougham',
     image: '/images/cars/cutlass-442.jpg',
-    logo: null, // Oldsmobile - no logo available
     count: 1089,
   },
   {
@@ -39,7 +36,6 @@ const GBODY_MODELS = [
     years: '1978-1987',
     subtitle: 'Limited • T-Type • GS',
     image: '/images/cars/regal-t-type.jpg',
-    logo: '/images/logos/buick-logo.png',
     count: 756,
   },
   {
@@ -48,7 +44,6 @@ const GBODY_MODELS = [
     years: '1978-1987',
     subtitle: 'SS • Conquista • Royal',
     image: '/images/cars/el-camino.jpg',
-    logo: '/images/logos/chevrolet-logo.jpg',
     count: 634,
   },
   {
@@ -57,7 +52,6 @@ const GBODY_MODELS = [
     years: '1978-1983',
     subtitle: 'Classic • Landau • Sport',
     image: '/images/cars/malibu.jpg',
-    logo: '/images/logos/chevrolet-logo.jpg',
     count: 423,
   },
   {
@@ -66,7 +60,6 @@ const GBODY_MODELS = [
     years: '1978-1987',
     subtitle: 'LJ • SJ • Turbo',
     image: '/images/cars/grand-prix.jpg',
-    logo: '/images/logos/pontiac-logo.svg',
     count: 567,
   },
 ];
@@ -180,10 +173,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      {model.logo && <img src={model.logo} alt="" className="w-5 h-5 object-contain brightness-200" />}
-                      <h4 className="font-bold text-sm text-white">{model.name}</h4>
-                    </div>
+                    <h4 className="font-bold text-sm text-white mb-1">{model.name}</h4>
                     <p className="text-xs text-white/60">{model.years}</p>
                     <div className="mt-1 flex items-center gap-1 text-xs">
                       <span className="text-orange-400 font-semibold">{model.count.toLocaleString()}</span>
