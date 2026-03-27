@@ -13,7 +13,7 @@ interface Part {
   freeShipping: boolean;
 }
 
-// Mike's Montes parts with realistic placeholder images based on category
+// Mike's Montes parts with realistic placeholder images by category
 const MIKES_MONTES_PARTS: Part[] = [
   // Front End Body Parts
   {
@@ -22,7 +22,7 @@ const MIKES_MONTES_PARTS: Part[] = [
     price: 769.00,
     category: 'Front End',
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
-    url: 'https://www.mikesmontes.com/Front-End-Body-Parts_c_11.html',
+    url: 'https://www.mikesmontes.com/',
     source: "Mike's Montes",
     fits: ['Monte Carlo SS 1983-1988'],
     inStock: true,
@@ -34,7 +34,7 @@ const MIKES_MONTES_PARTS: Part[] = [
     price: 299.00,
     category: 'Front End',
     image: 'https://images.unsplash.com/photo-1486262715612-cb603c959fd1?w=400&h=400&fit=crop',
-    url: 'https://www.mikesmontes.com/Front-End-Body-Parts_c_11.html',
+    url: 'https://www.mikesmontes.com/',
     source: "Mike's Montes",
     fits: ['Monte Carlo SS 1983-1988'],
     inStock: true,
@@ -46,7 +46,7 @@ const MIKES_MONTES_PARTS: Part[] = [
     price: 49.99,
     category: 'Front End',
     image: 'https://images.unsplash.com/photo-1558573667-eb5e5f8c7d5d?w=400&h=400&fit=crop',
-    url: 'https://www.mikesmontes.com/Front-End-Body-Parts_c_11.html',
+    url: 'https://www.mikesmontes.com/',
     source: "Mike's Montes",
     fits: ['All G-Body'],
     inStock: true,
@@ -152,18 +152,6 @@ const MIKES_MONTES_PARTS: Part[] = [
     inStock: true,
     freeShipping: false,
   },
-  {
-    id: 'mm-door-strap',
-    name: '4 Door Strap Ends and Covers',
-    price: 29.99,
-    category: 'Interior',
-    image: 'https://images.unsplash.com/photo-1558573667-eb5e5f8c7d5d?w=400&h=400&fit=crop',
-    url: 'https://www.mikesmontes.com/',
-    source: "Mike's Montes",
-    fits: ['Monte Carlo 1978-1985', 'Malibu 1978-1987', 'El Camino'],
-    inStock: true,
-    freeShipping: false,
-  },
   
   // Engine & Cooling
   {
@@ -206,6 +194,20 @@ const MIKES_MONTES_PARTS: Part[] = [
   },
 ];
 
+const PART_CATEGORIES = [
+  'All Parts',
+  'Front End',
+  'Exterior',
+  'Seals & Weatherstrip',
+  'Interior',
+  'Engine',
+  'Transmission',
+  'Suspension',
+  'Brakes',
+  'Electrical',
+];
+
+// Additional vendor links
 const VENDORS = [
   {
     name: "Mike's Montes",
@@ -228,7 +230,7 @@ const VENDORS = [
   {
     name: 'TurboBuick Cars For Sale',
     url: 'https://turbobuick.com/forums/cars-for-sale.39/',
-    description: 'Grand Nationals, T-Types, Turbo T\'s for sale by owner.',
+    description: 'Grand Nationals, T-Types, Turbo Ts for sale by owner.',
     highlight: 'Community listings',
   },
 ];
@@ -237,26 +239,13 @@ const FORUMS = [
   {
     name: 'TurboBuick.com',
     url: 'https://turbobuick.com',
-    description: 'Grand National & T-Type community - 48,000+ members',
+    description: 'Grand National and T-Type community',
   },
   {
     name: 'GBodyForum.com',
     url: 'https://gbodyforum.com',
     description: 'All G-Body discussion and marketplace',
   },
-];
-
-const PART_CATEGORIES = [
-  'All Parts',
-  'Front End',
-  'Exterior',
-  'Seals & Weatherstrip',
-  'Interior',
-  'Engine',
-  'Transmission',
-  'Suspension',
-  'Brakes',
-  'Electrical',
 ];
 
 export async function GET(request: NextRequest) {
