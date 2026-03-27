@@ -3,53 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Search, MapPin, Filter, Grid3X3, List, ExternalLink, RefreshCw } from 'lucide-react';
+import { ExternalLink, RefreshCw, MapPin, DollarSign, Car, Search } from 'lucide-react';
 
-// Real listing sources and search URLs
-const SEARCH_SOURCES = {
-  'monte-carlo': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=monte%20carlo%20ss%201978%201988',
-    craigslist: 'https://www.craigslist.org/search/sss?query=monte%20carlo%20gbody&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=monte+carlo+ss+1978-1988&_sop=15',
-    bat: 'https://bringatrailer.com/search/monte-carlo/',
-  },
-  'grand-national': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=buick%20grand%20national',
-    craigslist: 'https://www.craigslist.org/search/sss?query=grand%20national%20buick&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=buick+grand+national&_sop=15',
-    bat: 'https://bringatrailer.com/search/buick-grand-national/',
-  },
-  'cutlass-supreme': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=oldsmobile%20cutlass%20supreme',
-    craigslist: 'https://www.craigslist.org/search/sss?query=cutlass%20supreme%20442&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=oldsmobile+cutlass+442&_sop=15',
-    bat: 'https://bringatrailer.com/search/oldsmobile/',
-  },
-  'regal': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=buick%20regal%20t-type',
-    craigslist: 'https://www.craigslist.org/search/sss?query=buick%20regal%20gbody&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=buick+regal+grand+national&_sop=15',
-    bat: 'https://bringatrailer.com/search/buick/',
-  },
-  'el-camino': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=el%20camino%201978%201988',
-    craigslist: 'https://www.craigslist.org/search/sss?query=el%20camino%20ss&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=el+camino+ss&_sop=15',
-    bat: 'https://bringatrailer.com/search/el-camino/',
-  },
-  'malibu': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=chevy%20malibu%201978%201983',
-    craigslist: 'https://www.craigslist.org/search/sss?query=malibu%20chevelle&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=chevy+malibu+1978&_sop=15',
-    bat: 'https://bringatrailer.com/search/chevrolet-malibu/',
-  },
-  'grand-prix': {
-    facebook: 'https://www.facebook.com/marketplace/search/?query=pontiac%20grand%20prix%201978',
-    craigslist: 'https://www.craigslist.org/search/sss?query=grand%20prix%20pontiac&sort=rel',
-    ebay: 'https://www.ebay.com/sch/i.html?_nkw=pontiac+grand+prix&_sop=15',
-    bat: 'https://bringatrailer.com/search/pontiac-grand-prix/',
-  },
-};
+interface Listing {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  location: string;
+  image: string;
+  url: string;
+  source: string;
+}
 
 const MODEL_NAMES: Record<string, string> = {
   'monte-carlo': 'Monte Carlo',
@@ -61,20 +26,43 @@ const MODEL_NAMES: Record<string, string> = {
   'grand-prix': 'Grand Prix',
 };
 
-const SOURCE_LABELS: Record<string, string> = {
-  facebook: 'Facebook Marketplace',
-  craigslist: 'Craigslist',
-  ebay: 'eBay Motors',
-  bat: 'Bring a Trailer',
+const SOURCE_ICONS: Record<string, string> = {
+  'ebay': '🛒',
+  'facebook': '👤',
+  'craigslist': '📍',
+  'bat': '🏁',
+  'cars': '🚗',
+  'autotrader': '🔍',
+};
+
+const SOURCE_COLORS: Record<string, string> = {
+  'ebay': 'border-yellow-500 bg-yellow-500/10',
+  'facebook': 'border-blue-500 bg-blue-500/10',
+  'craigslist': 'border-purple-500 bg-purple-500/10',
+  'bat': 'border-green-500 bg-green-500/10',
 };
 
 export default function ListingsPage() {
   const searchParams = useSearchParams();
   const model = searchParams.get('model') || 'monte-carlo';
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-
-  const sources = SEARCH_SOURCES[model as keyof typeof SEARCH_SOURCES] || SEARCH_SOURCES['monte-carlo'];
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
   const modelName = MODEL_NAMES[model as keyof typeof MODEL_NAMES] || 'G-Body';
+
+  useEffect(() => {
+    async function fetchListings() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/listings?model=${model}`);
+        const data = await res.json();
+        setListings(data.listings || []);
+      } catch (error) {
+        console.error('Failed to fetch listings:', error);
+      }
+      setLoading(false);
+    }
+    fetchListings();
+  }, [model]);
 
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
@@ -93,105 +81,123 @@ export default function ListingsPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Model Title */}
+        {/* Title */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">{modelName} Listings</h1>
           <p className="text-[var(--gb-text-secondary)]">
-            Search across Facebook Marketplace, Craigslist, eBay, and Bring a Trailer
+            Real listings from Facebook, Craigslist, eBay, and Bring a Trailer
           </p>
         </div>
 
-        {/* Search Sources */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {Object.entries(sources).map(([key, url]) => (
-            <a
+        {/* Model Selector */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          {Object.entries(MODEL_NAMES).map(([key, name]) => (
+            <Link
               key={key}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group gb-card p-6 hover:border-orange-500 transition-all"
+              href={`/listings?model=${key}`}
+              className={`px-4 py-2 rounded-lg border transition-colors ${
+                model === key
+                  ? 'border-orange-500 bg-orange-500/10 text-orange-500'
+                  : 'border-[var(--gb-border)] bg-[var(--gb-surface)] text-[var(--gb-text-secondary)] hover:border-orange-500/50'
+              }`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-lg">{SOURCE_LABELS[key]}</h3>
-                <ExternalLink size={18} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
-              </div>
-              <p className="text-sm text-[var(--gb-text-muted)]">
-                Search {modelName} on {SOURCE_LABELS[key]}
-              </p>
-              <div className="mt-4 inline-flex items-center gap-2 text-orange-500 text-sm font-medium">
-                <RefreshCw size={14} />
-                Live Results
-              </div>
-            </a>
+              {name}
+            </Link>
           ))}
         </div>
 
+        {/* Listings Grid */}
+        {loading ? (
+          <div className="text-center py-16">
+            <RefreshCw className="animate-spin mx-auto mb-4 text-orange-500" size={32} />
+            <p className="text-[var(--gb-text-muted)]">Searching all platforms...</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {listings.map((listing) => (
+              <a
+                key={listing.id}
+                href={listing.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group rounded-xl border overflow-hidden transition-all hover:scale-[1.02] ${
+                  SOURCE_COLORS[listing.source] || 'border-[var(--gb-border)] bg-[var(--gb-surface)]'
+                }`}
+              >
+                <div className="aspect-video relative overflow-hidden bg-[var(--gb-dark)]">
+                  <img 
+                    src={listing.image} 
+                    alt={listing.title}
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/images/cars/placeholder.jpg';
+                    }}
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span className={`px-2 py-1 text-xs font-bold rounded ${
+                      listing.source === 'ebay' ? 'bg-yellow-500 text-black' :
+                      listing.source === 'facebook' ? 'bg-blue-500 text-white' :
+                      listing.source === 'craigslist' ? 'bg-purple-500 text-white' :
+                      listing.source === 'bat' ? 'bg-green-500 text-white' :
+                      'bg-gray-500 text-white'
+                    }`}>
+                      {listing.source.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-white mb-2 line-clamp-2">
+                    {listing.title}
+                  </h3>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[var(--gb-text-muted)] flex items-center gap-1">
+                      <MapPin size={14} />
+                      {listing.location}
+                    </span>
+                    <ExternalLink size={16} className="text-orange-500" />
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+
         {/* Search Tips */}
-        <div className="gb-card p-6 mb-8">
-          <h2 className="font-semibold text-lg mb-4">Search Tips for {modelName}</h2>
+        <div className="mt-12 gb-card p-6">
+          <h2 className="font-semibold text-lg mb-4">💡 Pro Search Tips</h2>
           <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--gb-text-secondary)]">
             <div>
-              <h4 className="font-medium text-white mb-2">Keywords to Try</h4>
+              <h4 className="font-medium text-white mb-2">Best Keywords for {modelName}</h4>
               <ul className="space-y-1">
-                <li>• "{modelName} for sale"</li>
-                <li>• "{modelName} project"</li>
-                <li>• "{modelName} restomod"</li>
-                <li>• "{modelName} numbers matching"</li>
+                <li>• "{modelName} project" - find fixer-uppers</li>
+                <li>• "{modelName} restomod" - modified builds</li>
+                <li>• "{modelName} numbers matching" - original cars</li>
+                <li>• "{modelName} low miles" - low mileage</li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium text-white mb-2">Year Ranges</h4>
               <ul className="space-y-1">
-                <li>• 1978-1988 (full G-Body era)</li>
-                <li>• 1983-1988 (fuel injection years)</li>
-                <li>• 1986-1987 (final years, best build quality)</li>
+                <li>• 1978-1988 - Full G-Body era</li>
+                <li>• 1983-1988 - Fuel injection years</li>
+                <li>• 1986-1987 - Best build quality</li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Model Selector */}
-        <div className="mb-8">
-          <h2 className="font-semibold text-lg mb-4">Browse Other Models</h2>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(MODEL_NAMES).map(([key, name]) => (
-              <Link
-                key={key}
-                href={`/listings?model=${key}`}
-                className={`px-4 py-2 rounded-lg border transition-colors ${
-                  model === key
-                    ? 'border-orange-500 bg-orange-500/10 text-orange-500'
-                    : 'border-[var(--gb-border)] bg-[var(--gb-surface)] text-[var(--gb-text-secondary)] hover:border-orange-500/50'
-                }`}
-              >
-                {name}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Coming Soon */}
-        <div className="text-center py-16">
-          <h2 className="text-2xl font-bold mb-4">Full Integration Coming Soon</h2>
-          <p className="text-[var(--gb-text-secondary)] mb-6 max-w-xl mx-auto">
-            We're building a unified search that pulls real listings from all sources. 
-            For now, click the buttons above to search directly on each platform.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link href="/build-calculator" className="gb-btn gb-btn-primary">
-              Build Calculator
-            </Link>
-            <Link href="/parts" className="gb-btn gb-btn-secondary">
-              Browse Parts
-            </Link>
-          </div>
+        {/* Back to top */}
+        <div className="mt-8 text-center">
+          <Link href="/" className="text-orange-500 hover:text-orange-400">
+            ← Back to Home
+          </Link>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-[var(--gb-surface)] border-t border-[var(--gb-border)] py-8">
+      <footer className="bg-[var(--gb-surface)] border-t border-[var(--gb-border)] py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-[var(--gb-text-muted)]">
-          <p>© 2026 G-Body Finder. All rights reserved.</p>
+          <p>© 2026 G-Body Finder. Links to external marketplaces.</p>
         </div>
       </footer>
     </div>
