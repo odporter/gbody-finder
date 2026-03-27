@@ -30,7 +30,7 @@ const GBODY_MODELS = [
     years: '1978-1988',
     subtitle: '442 • Salon • Brougham',
     image: '/images/cars/cutlass-442.jpg',
-    logo: '/images/logos/chevrolet-logo.jpg',
+    logo: null, // Oldsmobile - no logo available
     count: 1089,
   },
   {
@@ -181,7 +181,7 @@ export default function Home() {
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <img src={model.logo} alt="" className="w-5 h-5 object-contain brightness-200" />
+                      {model.logo && <img src={model.logo} alt="" className="w-5 h-5 object-contain brightness-200" />}
                       <h4 className="font-bold text-sm text-white">{model.name}</h4>
                     </div>
                     <p className="text-xs text-white/60">{model.years}</p>
