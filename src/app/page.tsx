@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, ChevronRight, Car, Zap, Users, Shield, Package, Wrench, ArrowRight, Calculator, Settings, Gauge } from 'lucide-react';
+import { Search, ChevronRight, Car, Zap, Users, Shield, Package, Wrench, Calculator, Settings, Gauge, Cog, Timer, TrendingUp } from 'lucide-react';
 
 // G-Body Models with real images and logos
 const GBODY_MODELS = [
@@ -20,7 +20,7 @@ const GBODY_MODELS = [
     name: 'Grand National',
     years: '1982-1987',
     subtitle: 'GN • T-Type • Turbo T',
-    image: '/images/cars/grand-national-2.jpg',
+    image: '/images/cars/grand-national.jpg',
     logo: '/images/logos/buick-logo.png',
     count: 892,
   },
@@ -30,7 +30,7 @@ const GBODY_MODELS = [
     years: '1978-1988',
     subtitle: '442 • Salon • Brougham',
     image: '/images/cars/cutlass-442.jpg',
-    logo: '/images/logos/chevrolet-logo.jpg', // Olds logo
+    logo: '/images/logos/chevrolet-logo.jpg',
     count: 1089,
   },
   {
@@ -94,7 +94,7 @@ const FEATURED_LISTINGS = [
     model: 'Grand National',
     engine: '3.8L Turbo V6',
     mileage: 62000,
-    image: '/images/cars/grand-national-2.jpg',
+    image: '/images/cars/grand-national.jpg',
     condition: 'Show Quality',
     isFeatured: true,
   },
@@ -113,12 +113,12 @@ const FEATURED_LISTINGS = [
 ];
 
 const BUILD_ENGINES = [
-  { name: 'LS3 6.2L', hp: '430-500', cost: '$8,000-15,000', popular: true },
-  { name: 'LS1 5.7L', hp: '305-350', cost: '$4,000-8,000', popular: false },
-  { name: 'LS7 7.0L', hp: '505-580', cost: '$15,000-25,000', popular: false },
-  { name: '350 Small Block', hp: '300-400', cost: '$3,000-7,000', popular: true },
-  { name: '383 Stroker', hp: '400-500', cost: '$5,000-12,000', popular: false },
-  { name: '454 Big Block', hp: '450-600', cost: '$6,000-15,000', popular: false },
+  { name: 'LS3 6.2L', hp: '430-500', torque: '425-470', cost: '8,000-15,000', popular: true, boost: 'N/A' },
+  { name: 'LS1 5.7L', hp: '305-350', torque: '300-350', cost: '4,000-8,000', popular: false, boost: 'N/A' },
+  { name: 'LS7 7.0L', hp: '505-580', torque: '470-540', cost: '15,000-25,000', popular: false, boost: 'N/A' },
+  { name: '350 Small Block', hp: '300-400', torque: '350-420', cost: '3,000-7,000', popular: true, boost: 'N/A' },
+  { name: '383 Stroker', hp: '400-500', torque: '420-500', cost: '5,000-12,000', popular: false, boost: 'N/A' },
+  { name: 'LS Turbo', hp: '600-1000+', torque: '550-900+', cost: '12,000-30,000', popular: true, boost: '15-30 PSI' },
 ];
 
 const STATS = [
@@ -133,63 +133,61 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
-      {/* Hero Section */}
+      {/* Hero Section - Big Monte Carlo Background */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background with gradient */}
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/cars/monte-carlo-ss.jpg"
-            alt="G-Body Classic"
-            className="w-full h-full object-cover opacity-20"
+            alt="Monte Carlo SS"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/70 to-[var(--gb-dark)]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-[var(--gb-dark)]" />
         </div>
         
-        {/* Grid overlay */}
-        <div className="absolute inset-0 z-0 opacity-10 bg-[length:60px_60px]" style={{ backgroundImage: 'url("/grid.svg")' || 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)' }} />
-
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-20">
-          {/* Logo */}
-          <div className="text-center mb-10">
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 pt-8 pb-20">
+          {/* Logo - Top Left */}
+          <div className="mb-12">
+            <h1 className="text-4xl md:text-5xl font-black">
               <span className="chrome-text">G-BODY</span>
               <span className="text-white ml-2">FINDER</span>
             </h1>
-            <p className="text-[var(--gb-text-muted)] text-lg mt-2">
+            <p className="text-[var(--gb-text-muted)] text-sm mt-1">
               The #1 Marketplace for G-Body Classics
             </p>
           </div>
 
-          {/* Model Cards */}
-          <div className="mb-12">
-            <h3 className="text-center text-xs font-semibold text-[var(--gb-text-muted)] uppercase tracking-widest mb-6">
-              Select Your G-Body
+          {/* G-Body Selector - Prominent */}
+          <div className="mb-10">
+            <h3 className="text-xs font-semibold text-orange-500 uppercase tracking-widest mb-4">
+              Find Your G-Body
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl">
               {GBODY_MODELS.map((model) => (
                 <Link
                   key={model.id}
                   href={`/listings?model=${model.id}`}
-                  className="group relative overflow-hidden rounded-xl bg-[var(--gb-surface)] border border-[var(--gb-border)] hover:border-orange-500 transition-all duration-300"
+                  className="group relative overflow-hidden rounded-xl bg-black/60 backdrop-blur-sm border border-white/10 hover:border-orange-500 transition-all duration-300"
                 >
                   <div className="aspect-[4/3] relative overflow-hidden">
                     <img 
                       src={model.image} 
                       alt={model.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <img src={model.logo} alt="" className="w-5 h-5 object-contain opacity-80" />
+                      <img src={model.logo} alt="" className="w-5 h-5 object-contain brightness-200" />
                       <h4 className="font-bold text-sm text-white">{model.name}</h4>
                     </div>
-                    <p className="text-xs text-[var(--gb-text-muted)]">{model.years}</p>
+                    <p className="text-xs text-white/60">{model.years}</p>
                     <div className="mt-1 flex items-center gap-1 text-xs">
-                      <span className="text-orange-500 font-semibold">{model.count.toLocaleString()}</span>
-                      <span className="text-[var(--gb-text-muted)]">listed</span>
+                      <span className="text-orange-400 font-semibold">{model.count.toLocaleString()}</span>
+                      <span className="text-white/40">listed</span>
                     </div>
                   </div>
                 </Link>
@@ -198,17 +196,17 @@ export default function Home() {
               {/* Parts Card */}
               <Link
                 href="/parts"
-                className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-[var(--gb-border)] hover:border-orange-500 transition-all duration-300"
+                className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-zinc-900 to-black border border-white/10 hover:border-orange-500 transition-all duration-300"
               >
                 <div className="aspect-[4/3] flex items-center justify-center">
-                  <Wrench size={48} className="text-orange-500/50 group-hover:text-orange-500 transition-colors" />
+                  <Wrench size={48} className="text-orange-500/60 group-hover:text-orange-500 transition-colors" />
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <h4 className="font-bold text-sm text-white">Parts & Accessories</h4>
-                  <p className="text-xs text-[var(--gb-text-muted)]">All Years</p>
+                  <h4 className="font-bold text-sm text-white">Parts</h4>
+                  <p className="text-xs text-white/60">All Years</p>
                   <div className="mt-1 flex items-center gap-1 text-xs">
-                    <span className="text-orange-500 font-semibold">8,234</span>
-                    <span className="text-[var(--gb-text-muted)]">parts</span>
+                    <span className="text-orange-400 font-semibold">8,234</span>
+                    <span className="text-white/40">parts</span>
                   </div>
                 </div>
               </Link>
@@ -218,13 +216,13 @@ export default function Home() {
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-10">
             <div className="relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--gb-text-muted)]" size={22} />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" size={22} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by model, year, location, engine..."
-                className="w-full pl-14 pr-32 py-5 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-2xl text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 text-lg"
+                className="w-full pl-14 pr-32 py-5 bg-black/60 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 text-lg"
               />
               <button className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors">
                 Search
@@ -235,10 +233,10 @@ export default function Home() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
             {STATS.map((stat) => (
-              <div key={stat.label} className="text-center p-4 bg-[var(--gb-surface)]/50 backdrop-blur rounded-xl border border-[var(--gb-border)]">
-                <stat.icon className="mx-auto mb-2 text-orange-500" size={24} />
-                <div className="text-xl md:text-2xl font-bold">{stat.value}</div>
-                <div className="text-xs text-[var(--gb-text-muted)]">{stat.label}</div>
+              <div key={stat.label} className="text-center p-4 bg-black/40 backdrop-blur-sm rounded-xl border border-white/10">
+                <stat.icon className="mx-auto mb-2 text-orange-400" size={24} />
+                <div className="text-xl md:text-2xl font-bold text-white">{stat.value}</div>
+                <div className="text-xs text-white/50">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -246,11 +244,14 @@ export default function Home() {
       </section>
 
       {/* Build Calculator */}
-      <section className="py-16 bg-[var(--gb-surface)]">
+      <section className="py-16 bg-gradient-to-b from-[var(--gb-dark)] to-[var(--gb-surface)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-10">
-            <Calculator className="mx-auto mb-4 text-orange-500" size={40} />
-            <h2 className="text-3xl font-bold">Build Calculator</h2>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full text-orange-400 text-sm mb-4">
+              <Cog size={16} />
+              Build Calculator
+            </div>
+            <h2 className="text-3xl font-bold">Engine Build Estimator</h2>
             <p className="text-[var(--gb-text-secondary)] mt-2">Estimate HP, torque, and cost for your G-Body build</p>
           </div>
 
@@ -258,27 +259,50 @@ export default function Home() {
             {BUILD_ENGINES.map((engine) => (
               <div 
                 key={engine.name}
-                className={`p-5 rounded-xl border ${engine.popular ? 'border-orange-500 bg-orange-500/5' : 'border-[var(--gb-border)] bg-[var(--gb-dark)]'}`}
+                className={`relative p-6 rounded-2xl border ${engine.popular ? 'border-orange-500 bg-gradient-to-br from-orange-500/10 to-transparent' : 'border-[var(--gb-border)] bg-[var(--gb-dark)]'}`}
               >
                 {engine.popular && (
-                  <span className="text-xs text-orange-500 font-semibold">POPULAR</span>
+                  <span className="absolute top-3 right-3 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">
+                    POPULAR
+                  </span>
                 )}
-                <h3 className="font-bold text-lg mt-1">{engine.name}</h3>
-                <div className="mt-3 space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-[var(--gb-text-muted)]">Horsepower</span>
-                    <span className="font-semibold">{engine.hp} HP</span>
+                <h3 className="font-bold text-xl mb-1">{engine.name}</h3>
+                <p className="text-sm text-[var(--gb-text-muted)] mb-4">G-Body Swap Ready</p>
+                
+                <div className="space-y-3 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[var(--gb-text-muted)] text-sm flex items-center gap-2">
+                      <TrendingUp size={14} className="text-orange-500" />
+                      Horsepower
+                    </span>
+                    <span className="font-semibold text-white">{engine.hp} HP</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--gb-text-muted)]">Est. Cost</span>
-                    <span className="font-semibold text-orange-500">{engine.cost}</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[var(--gb-text-muted)] text-sm flex items-center gap-2">
+                      <Timer size={14} className="text-orange-500" />
+                      Torque
+                    </span>
+                    <span className="font-semibold text-white">{engine.torque} LB-FT</span>
+                  </div>
+                  {engine.boost !== 'N/A' && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-[var(--gb-text-muted)] text-sm">Boost</span>
+                      <span className="font-semibold text-orange-400">{engine.boost}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-[var(--gb-border)] mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[var(--gb-text-muted)] text-sm">Est. Cost</span>
+                    <span className="text-2xl font-bold text-orange-500">${engine.cost}</span>
                   </div>
                 </div>
+
                 <Link 
                   href={`/build-calculator?engine=${engine.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="mt-4 w-full inline-flex items-center justify-center gap-2 py-2 rounded-lg bg-[var(--gb-surface)] border border-[var(--gb-border)] hover:border-orange-500 transition-colors text-sm"
+                  className="block w-full text-center py-3 rounded-xl bg-[var(--gb-surface)] border border-[var(--gb-border)] hover:border-orange-500 transition-colors text-sm font-medium"
                 >
-                  <Settings size={16} />
                   Configure Build
                 </Link>
               </div>
@@ -350,50 +374,50 @@ export default function Home() {
       </section>
 
       {/* Why G-Body Finder */}
-      <section className="py-16 bg-[var(--gb-dark)]">
+      <section className="py-16 bg-[var(--gb-surface)]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Why G-Body Finder?</h2>
             <p className="text-[var(--gb-text-secondary)] max-w-2xl mx-auto">
-              We aggregate from <strong>everywhere</strong> — Facebook Marketplace, Craigslist, eBay, Bring a Trailer, Cars.com, Autotrader, forums, and more.
+              We pull from <strong>everywhere</strong> — Facebook, Craigslist, eBay, Bring a Trailer, Cars.com, Autotrader, forums, and dealers nationwide.
             </p>
           </div>
           
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-2xl border border-[var(--gb-border)]">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
                 <Search className="text-orange-500" size={28} />
               </div>
               <h3 className="font-semibold mb-2 text-lg">All Sources</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Facebook, Craigslist, eBay, BAT, Cars.com, Autotrader, forums — all in one search.
+                Facebook, Craigslist, eBay, BAT, Cars.com, Autotrader, forums — one search.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-2xl border border-[var(--gb-border)]">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
                 <Shield className="text-orange-500" size={28} />
               </div>
               <h3 className="font-semibold mb-2 text-lg">Verified Sellers</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                We verify dealers and private sellers for safe transactions.
+                Dealers and private sellers verified for safe transactions.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-2xl border border-[var(--gb-border)]">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
                 <Wrench className="text-orange-500" size={28} />
               </div>
               <h3 className="font-semibold mb-2 text-lg">Parts Network</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Summit, Jegs, RockAuto, Classic Industries, Mikes Montes — find parts fast.
+                Summit, Jegs, RockAuto, Classic Industries, Mikes Montes.
               </p>
             </div>
-            <div className="text-center p-6 bg-[var(--gb-surface)] rounded-2xl border border-[var(--gb-border)]">
+            <div className="text-center p-6 bg-[var(--gb-dark)] rounded-2xl border border-[var(--gb-border)]">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-orange-500/10 flex items-center justify-center">
                 <Gauge className="text-orange-500" size={28} />
               </div>
               <h3 className="font-semibold mb-2 text-lg">Build Calculator</h3>
               <p className="text-sm text-[var(--gb-text-secondary)]">
-                Estimate HP, torque, and costs for LS swaps, 350 builds, and more.
+                HP, torque, and cost estimates for LS and 350 builds.
               </p>
             </div>
           </div>
@@ -402,7 +426,7 @@ export default function Home() {
 
       {/* CTA */}
       <section className="py-20 bg-gradient-to-r from-orange-600 via-red-600 to-orange-700 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[length:60px_60px]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)' }} />
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Find Your G-Body Today</h2>
           <p className="text-white/80 text-lg mb-8">
