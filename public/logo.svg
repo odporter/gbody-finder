@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff4500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#c0c0c0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#808080;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#0a0a0a" stroke="url(#fireGrad)" stroke-width="4"/>
+  
+  <!-- G stylized as speed lines / car silhouette -->
+  <g transform="translate(50, 40)">
+    <!-- Speed lines -->
+    <path d="M10 60 L80 60" stroke="url(#fireGrad)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M20 75 L90 75" stroke="url(#fireGrad)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M5 90 L70 90" stroke="#ff6b00" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+    
+    <!-- G shape -->
+    <path d="M85 40 L85 80 C85 105 60 120 35 120 C10 120 0 100 0 75 C0 50 20 30 50 30 L85 30 L85 55 L55 55 C40 55 30 65 30 80 C30 95 40 100 55 100 L55 75 L85 75" 
+          fill="url(#chromeGrad)" stroke="url(#fireGrad)" stroke-width="3"/>
+    
+    <!-- Flame effect -->
+    <path d="M90 25 Q95 10 100 25 Q105 15 110 25" stroke="url(#fireGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="100" y="150" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="url(#fireGrad)">G-BODY</text>
+  <text x="100" y="170" font-family="system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle" fill="#888">FINDER</text>
+</svg>

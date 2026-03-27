@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80">
+  <defs>
+    <linearGradient id="fireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff6b00"/>
+      <stop offset="100%" style="stop-color:#ff4500"/>
+    </linearGradient>
+    <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="50%" style="stop-color:#c0c0c0"/>
+      <stop offset="100%" style="stop-color:#666666"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- G stylized -->
+  <g transform="translate(0, 10)">
+    <circle cx="30" cy="30" r="28" fill="none" stroke="url(#fireGrad)" stroke-width="3"/>
+    <path d="M30 2 L30 15 M18 30 L42 30 M30 58 L30 45 Q45 45 45 30 Q45 15 30 15" 
+          stroke="url(#fireGrad)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M30 58 L30 70" stroke="url(#fireGrad)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="70" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="900" fill="url(#chromeGrad)">G-BODY</text>
+  <text x="70" y="55" font-family="system-ui, -apple-system, sans-serif" font-size="14" fill="#ff6b00" letter-spacing="4">FINDER</text>
+</svg>

@@ -129,6 +129,29 @@ export default function ListingsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
+      {/* Header */}
+      <header className="bg-[var(--gb-surface)]/95 backdrop-blur border-b border-[var(--gb-border)] sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <img 
+              src="/logo.svg" 
+              alt="G-Body Finder" 
+              className="h-10 w-10"
+            />
+            <div>
+              <span className="text-xl font-black chrome-text">G-BODY</span>
+              <span className="text-white text-sm font-light ml-1">FINDER</span>
+            </div>
+          </Link>
+          <nav className="flex items-center gap-6">
+            <Link href="/listings" className="text-orange-500 font-semibold text-sm">Listings</Link>
+            <Link href="/market" className="text-[var(--gb-text-secondary)] hover:text-white text-sm">Market</Link>
+            <Link href="/parts" className="text-[var(--gb-text-secondary)] hover:text-white text-sm">Parts</Link>
+            <Link href="/build-calculator" className="text-[var(--gb-text-secondary)] hover:text-white text-sm">Build Calc</Link>
+          </nav>
+        </div>
+      </header>
+      
       {/* Hero Section */}
       <section className="relative h-[50vh] min-h-[400px] overflow-hidden">
         <img 
