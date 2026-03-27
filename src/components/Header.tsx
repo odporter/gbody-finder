@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export function Header() {
-  const pathname = usePathnames?.() || '';
+  const pathname = usePathname?.() || '';
   
   return (
     <header className="bg-[var(--gb-surface)]/95 backdrop-blur border-b border-[var(--gb-border)] sticky top-0 z-50">

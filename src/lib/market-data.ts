@@ -144,7 +144,7 @@ export const GBODY_MARKET_DATA: ModelMarketData[] = [
       { year: 2022, avgValue: 17000 },
       { year: 2024, avgValue: 24000 },
       { year: 2025, avgValue: 28000 },
-    },
+    ],
     appreciation: {
       y1: 16.7,
       y3: 55.6,
