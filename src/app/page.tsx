@@ -168,7 +168,7 @@ export default function Home() {
               {GBODY_MODELS.map((model) => (
                 <Link
                   key={model.id}
-                  href={`/listings?model=${model.id}`}
+                  href={`/models/${model.id}`}
                   className="group relative overflow-hidden rounded-xl bg-black/60 backdrop-blur-sm border border-white/10 hover:border-orange-500 transition-all duration-300"
                 >
                   <div className="aspect-[4/3] relative overflow-hidden">
