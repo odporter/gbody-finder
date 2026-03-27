@@ -325,4 +325,4 @@ export default function ListingsPage() {
       </div>
     </div>
   );
-}
+}// trigger
