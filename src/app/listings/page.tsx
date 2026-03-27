@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ExternalLink, MapPin, DollarSign, Clock, Eye, TrendingUp } from 'lucide-react';
+import { ExternalLink, TrendingUp, Wrench, Car } from 'lucide-react';
 
 const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string }> = {
   'monte-carlo': {
@@ -51,10 +51,36 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
 };
 
 const SOURCES = [
-  { name: 'Bring a Trailer', url: 'bat', color: 'bg-green-500' },
-  { name: 'eBay Motors', url: 'ebay', color: 'bg-yellow-500' },
-  { name: 'Facebook Marketplace', url: 'facebook', color: 'bg-blue-500' },
-  { name: 'Craigslist', url: 'craigslist', color: 'bg-purple-500' },
+  { 
+    name: 'Bring a Trailer', 
+    url: 'bat', 
+    color: 'from-green-600 to-emerald-700',
+    description: 'Auction site for classic cars',
+  },
+  { 
+    name: 'eBay Motors', 
+    url: 'ebay', 
+    color: 'from-yellow-500 to-orange-500',
+    description: 'Largest marketplace for used cars',
+  },
+  { 
+    name: 'Facebook Marketplace', 
+    url: 'facebook', 
+    color: 'from-blue-600 to-blue-700',
+    description: 'Local listings from private sellers',
+  },
+  { 
+    name: 'Cars.com', 
+    url: 'cars', 
+    color: 'from-red-600 to-red-700',
+    description: 'Dealer and private listings',
+  },
+  { 
+    name: 'Autotrader', 
+    url: 'autotrader', 
+    color: 'from-orange-500 to-red-600',
+    description: 'Nationwide dealer inventory',
+  },
 ];
 
 export default function ListingsPage() {
@@ -71,8 +97,10 @@ export default function ListingsPage() {
         return `https://www.ebay.com/sch/i.html?_nkw=${query}&LH_ItemCondition=4&_sop=15`;
       case 'facebook':
         return `https://www.facebook.com/marketplace/search/?query=${query}`;
-      case 'craigslist':
-        return `https://www.craigslist.org/search/sss?query=${query}&sort=rel`;
+      case 'cars':
+        return `https://www.cars.com/shopping/results/?stock_type=used&keywords=${query}`;
+      case 'autotrader':
+        return `https://www.autotrader.com/cars-for-sale/all-cars/${query}`;
       default:
         return '#';
     }
@@ -85,29 +113,29 @@ export default function ListingsPage() {
         <img 
           src={config.hero}
           alt={config.name}
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[var(--gb-dark)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-[var(--gb-dark)]" />
         
         <div className="relative z-10 h-full flex flex-col justify-end p-8 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-3 py-1 bg-orange-500 text-white text-xs font-bold rounded">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="px-4 py-1.5 bg-orange-500 text-white text-sm font-bold rounded-full">
               {config.years}
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
             {config.name}
           </h1>
-          <p className="text-lg text-[var(--gb-text-secondary)] max-w-2xl">
+          <p className="text-lg md:text-xl text-[var(--gb-text-secondary)] max-w-2xl mb-6">
             {config.description}
           </p>
         </div>
       </section>
 
       {/* Model Selector */}
-      <div className="border-b border-[var(--gb-border)] bg-[var(--gb-surface)] sticky top-0 z-40">
+      <div className="border-b border-[var(--gb-border)] bg-[var(--gb-surface)]/95 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex overflow-x-auto scrollbar-hide">
+          <div className="flex overflow-x-auto scrollbar-hide py-1">
             {Object.entries(MODEL_CONFIGS).map(([key, cfg]) => (
               <Link
                 key={key}
@@ -125,115 +153,137 @@ export default function ListingsPage() {
         </div>
       </div>
 
-      {/* Search Sources */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Find {config.name}s For Sale</h2>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 py-12">
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold mb-2">Find {config.name}s For Sale</h2>
           <p className="text-[var(--gb-text-secondary)]">
-            Search across all major platforms for {config.years} {config.name}s
+            Search across top platforms for {config.years} {config.name}s
           </p>
         </div>
 
         {/* Source Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
           {SOURCES.map((source) => (
             <a
               key={source.url}
               href={getSearchUrl(source.url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="group gb-card p-6 hover:border-orange-500 transition-all"
+              className="group relative overflow-hidden rounded-xl border border-[var(--gb-border)] hover:border-orange-500 transition-all"
             >
-              <div className="flex items-center justify-between mb-4">
-                <span className={`${source.color} text-white px-3 py-1 rounded text-sm font-bold`}>
-                  {source.name}
-                </span>
-                <ExternalLink size={20} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
-              </div>
-              <p className="text-[var(--gb-text-secondary)] text-sm">
-                Search {config.name}s on {source.name}
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-xs text-orange-500">
-                <TrendingUp size={14} />
-                Live Listings
+              <div className={`absolute inset-0 bg-gradient-to-br ${source.color} opacity-5 group-hover:opacity-15 transition-opacity`} />
+              <div className="relative p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold">{source.name}</h3>
+                  <ExternalLink size={20} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
+                </div>
+                <p className="text-[var(--gb-text-secondary)] mb-4">
+                  {source.description}
+                </p>
+                <div className="flex items-center gap-2 text-sm text-orange-500">
+                  <TrendingUp size={16} />
+                  <span>Live Listings</span>
+                </div>
               </div>
             </a>
           ))}
         </div>
 
-        {/* Craigslist by City */}
-        <div className="mb-12">
-          <h3 className="text-xl font-bold mb-4">Browse by Region</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-            {['Los Angeles', 'Houston', 'Atlanta', 'Detroit', 'Phoenix', 'Dallas'].map((city) => (
-              <a
-                key={city}
-                href={`https://${city.toLowerCase().replace(' ', '')}.craigslist.org/search/sss?query=${encodeURIComponent(config.name)}&sort=rel`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-sm hover:border-orange-500 transition-colors"
-              >
-                {city}
-              </a>
-            ))}
-          </div>
-        </div>
-
         {/* Market Insights */}
-        <div className="gb-card p-6 mb-12">
-          <h3 className="text-xl font-bold mb-4">Market Insights</h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div>
-              <div className="text-sm text-[var(--gb-text-muted)] mb-1">Price Range</div>
-              <div className="text-2xl font-bold">$5,000 - $75,000</div>
-              <div className="text-xs text-[var(--gb-text-muted)]">Based on recent sales</div>
+        <div className="gb-card p-8 mb-12">
+          <h3 className="text-2xl font-bold mb-6">Market Insights</h3>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
+              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Price Range</div>
+              <div className="text-3xl font-bold text-orange-500">$5K - $75K</div>
+              <div className="text-xs text-[var(--gb-text-muted)] mt-1">Based on recent sales</div>
             </div>
-            <div>
-              <div className="text-sm text-[var(--gb-text-muted)] mb-1">Most Popular</div>
-              <div className="text-2xl font-bold">SS Aerocoupe</div>
-              <div className="text-xs text-[var(--gb-text-muted)]">For {config.name}</div>
+            <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
+              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Most Popular</div>
+              <div className="text-3xl font-bold">SS Aerocoupe</div>
+              <div className="text-xs text-[var(--gb-text-muted)] mt-1">{config.name}</div>
             </div>
-            <div>
-              <div className="text-sm text-[var(--gb-text-muted)] mb-1">Value Trend</div>
-              <div className="text-2xl font-bold text-green-500">↑ 12% YoY</div>
-              <div className="text-xs text-[var(--gb-text-muted)]">G-Body market rising</div>
+            <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
+              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Value Trend</div>
+              <div className="text-3xl font-bold text-green-400">↑ 12% YoY</div>
+              <div className="text-xs text-[var(--gb-text-muted)] mt-1">G-Body market rising</div>
             </div>
           </div>
         </div>
 
-        {/* Tips */}
-        <div className="gb-card p-6">
-          <h3 className="text-xl font-bold mb-4">Buying Tips</h3>
-          <div className="grid md:grid-cols-2 gap-6 text-sm">
+        {/* Buying Tips */}
+        <div className="gb-card p-8">
+          <h3 className="text-2xl font-bold mb-6">Buying Tips for {config.name}</h3>
+          <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h4 className="font-semibold text-white mb-2">What to Look For</h4>
-              <ul className="space-y-1 text-[var(--gb-text-secondary)]">
-                <li>• Rust in quarter panels and rockers</li>
-                <li>• Frame damage or previous accidents</li>
-                <li>• Numbers-matching drivetrain</li>
-                <li>• Original interior condition</li>
-                <li>• T-top seals and leaks</li>
+              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                <Car size={20} className="text-orange-500" />
+                What to Look For
+              </h4>
+              <ul className="space-y-2 text-[var(--gb-text-secondary)]">
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>Rust in quarter panels and rockers</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>Frame damage or previous accidents</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>Numbers-matching drivetrain</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>Original interior condition</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500">•</span>
+                  <span>T-top seals and leaks</span>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-2">Best Years</h4>
-              <ul className="space-y-1 text-[var(--gb-text-secondary)]">
-                <li>• <strong>1986-1987</strong> — Best build quality, fuel injection</li>
-                <li>• <strong>1983-1985</strong> — Good value, simpler to work on</li>
-                <li>• <strong>1978-1980</strong> — Lighter weight, carbureted</li>
-                <li>• <strong>Aerocoupe (1986-1988)</strong> — Most collectible</li>
+              <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                <Wrench size={20} className="text-orange-500" />
+                Best Years to Buy
+              </h4>
+              <ul className="space-y-2 text-[var(--gb-text-secondary)]">
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500 font-bold">1986-1987</span>
+                  <span>— Best build quality, fuel injection</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500 font-bold">1983-1985</span>
+                  <span>— Good value, simpler to work on</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500 font-bold">1978-1980</span>
+                  <span>— Lighter weight, carbureted</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-500 font-bold">Aerocoupe</span>
+                  <span>— Most collectible (1986-1988)</span>
+                </li>
               </ul>
             </div>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
           <Link 
             href="/build-calculator"
             className="gb-btn gb-btn-primary text-lg"
           >
-            Build Calculator →
+            Build Calculator
+          </Link>
+          <Link 
+            href="/parts"
+            className="gb-btn gb-btn-secondary text-lg"
+          >
+            Shop Parts
           </Link>
         </div>
       </main>
