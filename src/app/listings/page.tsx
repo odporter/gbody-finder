@@ -1,3 +1,5 @@
+'use client';
+
 import { Search, MapPin, DollarSign, Calendar, Filter, Grid3X3, List } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
