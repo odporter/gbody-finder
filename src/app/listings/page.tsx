@@ -1,328 +1,199 @@
 'use client';
 
-import { Search, MapPin, DollarSign, Calendar, Filter, Grid3X3, List } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { Search, MapPin, Filter, Grid3X3, List, ExternalLink, RefreshCw } from 'lucide-react';
 
-const LISTINGS = [
-  {
-    id: '1',
-    title: '1987 Monte Carlo SS Aerocoupe',
-    price: 28500,
-    location: 'Houston, TX',
-    year: 1987,
-    model: 'Monte Carlo SS',
-    engine: '305 V8',
-    transmission: 'Automatic',
-    mileage: 45000,
-    image: 'https://images.unsplash.com/photo-1583121274602-3e2820c6cd88?w=600&h=400&fit=crop',
-    condition: 'Excellent',
-    seller: 'Verified Dealer',
-    posted: '2 days ago',
+// Real listing sources and search URLs
+const SEARCH_SOURCES = {
+  'monte-carlo': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=monte%20carlo%20ss%201978%201988',
+    craigslist: 'https://www.craigslist.org/search/sss?query=monte%20carlo%20gbody&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=monte+carlo+ss+1978-1988&_sop=15',
+    bat: 'https://bringatrailer.com/search/monte-carlo/',
   },
-  {
-    id: '2',
-    title: '1985 Buick Grand National',
-    price: 45000,
-    location: 'Phoenix, AZ',
-    year: 1985,
-    model: 'Grand National',
-    engine: '3.8L Turbo V6',
-    transmission: 'Automatic',
-    mileage: 62000,
-    image: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop',
-    condition: 'Show Quality',
-    seller: 'Private Seller',
-    posted: '3 days ago',
+  'grand-national': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=buick%20grand%20national',
+    craigslist: 'https://www.craigslist.org/search/sss?query=grand%20national%20buick&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=buick+grand+national&_sop=15',
+    bat: 'https://bringatrailer.com/search/buick-grand-national/',
   },
-  {
-    id: '3',
-    title: '1984 Oldsmobile Cutlass Supreme',
-    price: 18500,
-    location: 'Atlanta, GA',
-    year: 1984,
-    model: 'Cutlass Supreme',
-    engine: '307 V8',
-    transmission: 'Automatic',
-    mileage: 78000,
-    image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&h=400&fit=crop',
-    condition: 'Good',
-    seller: 'Private Seller',
-    posted: '5 days ago',
+  'cutlass-supreme': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=oldsmobile%20cutlass%20supreme',
+    craigslist: 'https://www.craigslist.org/search/sss?query=cutlass%20supreme%20442&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=oldsmobile+cutlass+442&_sop=15',
+    bat: 'https://bringatrailer.com/search/oldsmobile/',
   },
-  {
-    id: '4',
-    title: '1988 Monte Carlo LS',
-    price: 12000,
-    location: 'Miami, FL',
-    year: 1988,
-    model: 'Monte Carlo LS',
-    engine: '305 V8',
-    transmission: 'Automatic',
-    mileage: 95000,
-    image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=400&fit=crop',
-    condition: 'Project',
-    seller: 'Private Seller',
-    posted: '1 week ago',
+  'regal': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=buick%20regal%20t-type',
+    craigslist: 'https://www.craigslist.org/search/sss?query=buick%20regal%20gbody&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=buick+regal+grand+national&_sop=15',
+    bat: 'https://bringatrailer.com/search/buick/',
   },
-  {
-    id: '5',
-    title: '1986 Buick Regal T-Type',
-    price: 32000,
-    location: 'Dallas, TX',
-    year: 1986,
-    model: 'Regal T-Type',
-    engine: '3.8L Turbo V6',
-    transmission: 'Automatic',
-    mileage: 56000,
-    image: 'https://images.unsplash.com/photo-1492144534655-ae8c224e9dfd?w=600&h=400&fit=crop',
-    condition: 'Excellent',
-    seller: 'Verified Dealer',
-    posted: '4 days ago',
+  'el-camino': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=el%20camino%201978%201988',
+    craigslist: 'https://www.craigslist.org/search/sss?query=el%20camino%20ss&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=el+camino+ss&_sop=15',
+    bat: 'https://bringatrailer.com/search/el-camino/',
   },
-  {
-    id: '6',
-    title: '1983 Oldsmobile 442',
-    price: 38000,
-    location: 'Charlotte, NC',
-    year: 1983,
-    model: '442',
-    engine: '350 V8',
-    transmission: 'Automatic',
-    mileage: 42000,
-    image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?w=600&h=400&fit=crop',
-    condition: 'Show Quality',
-    seller: 'Verified Dealer',
-    posted: '1 day ago',
+  'malibu': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=chevy%20malibu%201978%201983',
+    craigslist: 'https://www.craigslist.org/search/sss?query=malibu%20chevelle&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=chevy+malibu+1978&_sop=15',
+    bat: 'https://bringatrailer.com/search/chevrolet-malibu/',
   },
-];
+  'grand-prix': {
+    facebook: 'https://www.facebook.com/marketplace/search/?query=pontiac%20grand%20prix%201978',
+    craigslist: 'https://www.craigslist.org/search/sss?query=grand%20prix%20pontiac&sort=rel',
+    ebay: 'https://www.ebay.com/sch/i.html?_nkw=pontiac+grand+prix&_sop=15',
+    bat: 'https://bringatrailer.com/search/pontiac-grand-prix/',
+  },
+};
+
+const MODEL_NAMES: Record<string, string> = {
+  'monte-carlo': 'Monte Carlo',
+  'grand-national': 'Grand National',
+  'cutlass-supreme': 'Cutlass Supreme',
+  'regal': 'Buick Regal',
+  'el-camino': 'El Camino',
+  'malibu': 'Chevy Malibu',
+  'grand-prix': 'Grand Prix',
+};
+
+const SOURCE_LABELS: Record<string, string> = {
+  facebook: 'Facebook Marketplace',
+  craigslist: 'Craigslist',
+  ebay: 'eBay Motors',
+  bat: 'Bring a Trailer',
+};
 
 export default function ListingsPage() {
+  const searchParams = useSearchParams();
+  const model = searchParams.get('model') || 'monte-carlo';
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  
+
+  const sources = SEARCH_SOURCES[model as keyof typeof SEARCH_SOURCES] || SEARCH_SOURCES['monte-carlo'];
+  const modelName = MODEL_NAMES[model as keyof typeof MODEL_NAMES] || 'G-Body';
+
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
       {/* Header */}
       <header className="bg-[var(--gb-surface)] border-b border-[var(--gb-border)] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="text-xl font-bold">
-            <span className="chrome-text">G-Body</span> Finder
+            <span className="chrome-text">G-BODY</span> FINDER
           </Link>
           <nav className="flex items-center gap-6">
             <Link href="/listings" className="text-orange-500 font-semibold">Listings</Link>
-            <Link href="/sell" className="text-[var(--gb-text-secondary)] hover:text-white">Sell</Link>
-            <Link href="/community" className="text-[var(--gb-text-secondary)] hover:text-white">Community</Link>
-            <Link href="/signup" className="gb-btn gb-btn-primary text-sm">Sign Up</Link>
+            <Link href="/parts" className="text-[var(--gb-text-secondary)] hover:text-white">Parts</Link>
+            <Link href="/build-calculator" className="text-[var(--gb-text-secondary)] hover:text-white">Build Calc</Link>
           </nav>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar Filters */}
-          <aside className="lg:w-64 flex-shrink-0">
-            <div className="gb-card p-4 sticky top-24">
-              <div className="flex items-center gap-2 mb-4">
-                <Filter size={18} />
-                <h3 className="font-semibold">Filters</h3>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-[var(--gb-text-muted)] mb-2 block">Model</label>
-                  <select className="w-full px-3 py-2 bg-[var(--gb-dark)] border border-[var(--gb-border)] rounded-lg text-white focus:outline-none focus:border-orange-500">
-                    <option>All Models</option>
-                    <option>Monte Carlo</option>
-                    <option>Grand National</option>
-                    <option>Cutlass Supreme</option>
-                    <option>Regal</option>
-                    <option>Grand Prix</option>
-                    <option>442</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-sm text-[var(--gb-text-muted)] mb-2 block">Year Range</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input type="number" placeholder="From" className="px-3 py-2 bg-[var(--gb-dark)] border border-[var(--gb-border)] rounded-lg text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500" />
-                    <input type="number" placeholder="To" className="px-3 py-2 bg-[var(--gb-dark)] border border-[var(--gb-border)] rounded-lg text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-[var(--gb-text-muted)] mb-2 block">Price Range</label>
-                  <select className="w-full px-3 py-2 bg-[var(--gb-dark)] border border-[var(--gb-border)] rounded-lg text-white focus:outline-none focus:border-orange-500">
-                    <option>Any Price</option>
-                    <option>Under $10K</option>
-                    <option>$10K - $20K</option>
-                    <option>$20K - $35K</option>
-                    <option>$35K - $50K</option>
-                    <option>$50K+</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-sm text-[var(--gb-text-muted)] mb-2 block">Condition</label>
-                  <div className="space-y-2">
-                    {['Show Quality', 'Excellent', 'Good', 'Fair', 'Project'].map((condition) => (
-                      <label key={condition} className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" className="rounded border-[var(--gb-border)] text-orange-500 focus:ring-orange-500" />
-                        <span className="text-sm">{condition}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm text-[var(--gb-text-muted)] mb-2 block">Seller Type</label>
-                  <div className="space-y-2">
-                    {['Verified Dealer', 'Private Seller'].map((type) => (
-                      <label key={type} className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" className="rounded border-[var(--gb-border)] text-orange-500 focus:ring-orange-500" />
-                        <span className="text-sm">{type}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <button className="w-full gb-btn gb-btn-primary">
-                  Apply Filters
-                </button>
-              </div>
-            </div>
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-2xl font-bold">G-Body Listings</h1>
-                <p className="text-[var(--gb-text-muted)]">{LISTINGS.length} results found</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <select className="px-3 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white focus:outline-none focus:border-orange-500">
-                  <option>Newest First</option>
-                  <option>Price: Low to High</option>
-                  <option>Price: High to Low</option>
-                  <option>Mileage: Low to High</option>
-                </select>
-                <div className="flex bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg overflow-hidden">
-                  <button 
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 ${viewMode === 'grid' ? 'bg-orange-500' : 'hover:bg-[var(--gb-surface-hover)]'}`}
-                  >
-                    <Grid3X3 size={18} />
-                  </button>
-                  <button 
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 ${viewMode === 'list' ? 'bg-orange-500' : 'hover:bg-[var(--gb-surface-hover)]'}`}
-                  >
-                    <List size={18} />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Listings Grid */}
-            <div className={viewMode === 'grid' ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
-              {LISTINGS.map((listing) => (
-                <Link 
-                  key={listing.id} 
-                  href={`/listings/${listing.id}`}
-                  className={viewMode === 'grid' ? 'gb-card group' : 'gb-card group flex gap-4 p-4'}
-                >
-                  {viewMode === 'grid' ? (
-                    <>
-                      <div className="relative aspect-[4/3] overflow-hidden">
-                        <img 
-                          src={listing.image} 
-                          alt={listing.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2 py-1 bg-orange-500 text-white text-xs font-semibold rounded">
-                            {listing.condition}
-                          </span>
-                        </div>
-                        <div className="absolute top-3 right-3">
-                          <span className="px-2 py-1 bg-black/70 text-white text-xs font-semibold rounded">
-                            {listing.seller}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-lg mb-1 truncate">{listing.title}</h3>
-                        <div className="flex items-center gap-2 text-sm text-[var(--gb-text-muted)] mb-2">
-                          <Calendar size={14} />
-                          {listing.year} • {listing.engine}
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-[var(--gb-text-muted)] mb-3">
-                          <MapPin size={14} />
-                          {listing.location}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-bold text-orange-500">
-                            ${listing.price.toLocaleString()}
-                          </span>
-                          <span className="text-sm text-[var(--gb-text-muted)]">
-                            {listing.mileage.toLocaleString()} mi
-                          </span>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-48 h-32 flex-shrink-0 rounded-lg overflow-hidden">
-                        <img 
-                          src={listing.image} 
-                          alt={listing.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <h3 className="font-semibold text-lg">{listing.title}</h3>
-                            <div className="flex items-center gap-4 text-sm text-[var(--gb-text-muted)] mt-1">
-                              <span className="flex items-center gap-1"><Calendar size={14} /> {listing.year}</span>
-                              <span>{listing.engine}</span>
-                              <span>{listing.mileage.toLocaleString()} mi</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-[var(--gb-text-muted)] mt-1">
-                              <MapPin size={14} />
-                              {listing.location}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-orange-500">${listing.price.toLocaleString()}</div>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs rounded">{listing.condition}</span>
-                              <span className="text-xs text-[var(--gb-text-muted)]">{listing.seller}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </Link>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center gap-2 mt-12">
-              <button className="px-4 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-[var(--gb-text-muted)] hover:text-white">
-                Previous
-              </button>
-              <button className="px-4 py-2 bg-orange-500 rounded-lg text-white">1</button>
-              <button className="px-4 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white hover:border-orange-500">2</button>
-              <button className="px-4 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white hover:border-orange-500">3</button>
-              <button className="px-4 py-2 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-[var(--gb-text-muted)] hover:text-white">
-                Next
-              </button>
-            </div>
-          </main>
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Model Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">{modelName} Listings</h1>
+          <p className="text-[var(--gb-text-secondary)]">
+            Search across Facebook Marketplace, Craigslist, eBay, and Bring a Trailer
+          </p>
         </div>
-      </div>
+
+        {/* Search Sources */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {Object.entries(sources).map(([key, url]) => (
+            <a
+              key={key}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group gb-card p-6 hover:border-orange-500 transition-all"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold text-lg">{SOURCE_LABELS[key]}</h3>
+                <ExternalLink size={18} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
+              </div>
+              <p className="text-sm text-[var(--gb-text-muted)]">
+                Search {modelName} on {SOURCE_LABELS[key]}
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 text-orange-500 text-sm font-medium">
+                <RefreshCw size={14} />
+                Live Results
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* Search Tips */}
+        <div className="gb-card p-6 mb-8">
+          <h2 className="font-semibold text-lg mb-4">Search Tips for {modelName}</h2>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--gb-text-secondary)]">
+            <div>
+              <h4 className="font-medium text-white mb-2">Keywords to Try</h4>
+              <ul className="space-y-1">
+                <li>• "{modelName} for sale"</li>
+                <li>• "{modelName} project"</li>
+                <li>• "{modelName} restomod"</li>
+                <li>• "{modelName} numbers matching"</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium text-white mb-2">Year Ranges</h4>
+              <ul className="space-y-1">
+                <li>• 1978-1988 (full G-Body era)</li>
+                <li>• 1983-1988 (fuel injection years)</li>
+                <li>• 1986-1987 (final years, best build quality)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Model Selector */}
+        <div className="mb-8">
+          <h2 className="font-semibold text-lg mb-4">Browse Other Models</h2>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(MODEL_NAMES).map(([key, name]) => (
+              <Link
+                key={key}
+                href={`/listings?model=${key}`}
+                className={`px-4 py-2 rounded-lg border transition-colors ${
+                  model === key
+                    ? 'border-orange-500 bg-orange-500/10 text-orange-500'
+                    : 'border-[var(--gb-border)] bg-[var(--gb-surface)] text-[var(--gb-text-secondary)] hover:border-orange-500/50'
+                }`}
+              >
+                {name}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Coming Soon */}
+        <div className="text-center py-16">
+          <h2 className="text-2xl font-bold mb-4">Full Integration Coming Soon</h2>
+          <p className="text-[var(--gb-text-secondary)] mb-6 max-w-xl mx-auto">
+            We're building a unified search that pulls real listings from all sources. 
+            For now, click the buttons above to search directly on each platform.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link href="/build-calculator" className="gb-btn gb-btn-primary">
+              Build Calculator
+            </Link>
+            <Link href="/parts" className="gb-btn gb-btn-secondary">
+              Browse Parts
+            </Link>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-[var(--gb-surface)] border-t border-[var(--gb-border)] py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-[var(--gb-text-muted)]">
+          <p>© 2026 G-Body Finder. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
-}// trigger
+}

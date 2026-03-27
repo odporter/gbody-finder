@@ -443,6 +443,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Bottom Fade - Regal */}
+      <section className="relative py-32 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="/images/cars/regal-t-type.jpg"
+            alt="Buick Regal T-Type"
+            className="w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--gb-dark)] via-[var(--gb-dark)]/90 to-[var(--gb-dark)]" />
+        </div>
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-black mb-4">
+            <span className="chrome-text">G-BODY</span>
+            <span className="text-white"> FINDER</span>
+          </h2>
+          <p className="text-xl text-[var(--gb-text-secondary)] mb-8 max-w-2xl mx-auto">
+            The #1 marketplace for G-Body classics. Find your Monte Carlo, Grand National, Cutlass, Regal, El Camino, Malibu, or Grand Prix.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/listings" className="gb-btn gb-btn-primary text-lg">
+              Browse All Listings
+            </Link>
+            <Link href="/build-calculator" className="gb-btn gb-btn-secondary text-lg">
+              Build Calculator
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-[var(--gb-dark)] border-t border-[var(--gb-border)] py-12">
         <div className="max-w-7xl mx-auto px-4">
