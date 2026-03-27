@@ -1,20 +1,95 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ExternalLink, Filter, Package, Truck, Wrench, CheckCircle } from 'lucide-react';
-import { MIKES_MONTES_PARTS, PART_CATEGORIES, VENDORS, FORUMS } from '@/lib/parts';
+import { Search, ExternalLink, Package, Truck, Wrench, CheckCircle } from 'lucide-react';
+
+interface Part {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+  url: string;
+  source: string;
+  fits: string[];
+  inStock: boolean;
+  freeShipping: boolean;
+}
+
+const PART_CATEGORIES = [
+  'All Parts',
+  'Front End',
+  'Exterior',
+  'Seals & Weatherstrip',
+  'Interior',
+  'Engine',
+  'Transmission',
+  'Suspension',
+  'Brakes',
+  'Electrical',
+];
+
+const VENDORS = [
+  {
+    name: "Mike's Montes",
+    url: 'https://www.mikesmontes.com/',
+    description: '1981-1988 Monte Carlo SS and G-body parts. New, used, GM, and aftermarket.',
+    highlight: 'Free shipping on select items',
+  },
+  {
+    name: 'GBodyParts.com',
+    url: 'https://gbodyparts.com',
+    description: 'Wide selection of G-Body restoration and performance parts.',
+    highlight: 'Large inventory',
+  },
+  {
+    name: 'TurboBuick.com Marketplace',
+    url: 'https://turbobuick.com/forums/parts-for-sale.35/',
+    description: 'Parts for sale by Grand National and T-Type community members.',
+    highlight: 'Community marketplace',
+  },
+  {
+    name: 'TurboBuick Cars For Sale',
+    url: 'https://turbobuick.com/forums/cars-for-sale.39/',
+    description: 'Grand Nationals, T-Types, Turbo T\'s for sale by owner.',
+    highlight: 'Community listings',
+  },
+];
+
+const FORUMS = [
+  {
+    name: 'TurboBuick.com',
+    url: 'https://turbobuick.com',
+    description: 'Grand National & T-Type community - 48,000+ members',
+  },
+  {
+    name: 'GBodyForum.com',
+    url: 'https://gbodyforum.com',
+    description: 'All G-Body discussion and marketplace',
+  },
+];
 
 export default function PartsPage() {
+  const [parts, setParts] = useState<Part[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Parts');
 
-  const filteredParts = MIKES_MONTES_PARTS.filter(part => {
-    if (selectedCategory !== 'All Parts' && part.category !== selectedCategory) return false;
-    if (searchQuery && !part.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !part.fits.some(f => f.toLowerCase().includes(searchQuery.toLowerCase()))) return false;
-    return true;
-  });
+  useEffect(() => {
+    async function fetchParts() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/parts?category=${encodeURIComponent(selectedCategory)}&search=${encodeURIComponent(searchQuery)}`);
+        const data = await res.json();
+        setParts(data.parts || []);
+      } catch (error) {
+        console.error('Failed to fetch parts:', error);
+      }
+      setLoading(false);
+    }
+    fetchParts();
+  }, [selectedCategory, searchQuery]);
 
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
@@ -37,7 +112,7 @@ export default function PartsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">G-Body Parts</h1>
           <p className="text-[var(--gb-text-secondary)]">
-            Real parts from trusted vendors — exact fitment for your Monte Carlo, Grand National, Cutlass, and more
+            Real parts from Mike's Montes with exact fitment for your G-Body
           </p>
         </div>
 
@@ -73,7 +148,7 @@ export default function PartsPage() {
             </span>
             <span className="flex items-center gap-1 text-[var(--gb-text-muted)]">
               <Package size={14} />
-              130+ Parts Available
+              15+ Parts Listed
             </span>
           </div>
         </div>
@@ -102,52 +177,56 @@ export default function PartsPage() {
         </div>
 
         {/* Parts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12">
-          {filteredParts.map((part) => (
-            <a
-              key={part.id}
-              href={part.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group gb-card overflow-hidden hover:border-orange-500 transition-all"
-            >
-              <div className="aspect-square bg-[var(--gb-dark)] relative overflow-hidden">
-                <img 
-                  src={part.image} 
-                  alt={part.name}
-                  className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/images/cars/placeholder.jpg';
-                  }}
-                />
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">
-                    {part.source}
-                  </span>
-                  {part.freeShipping && (
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
-                      FREE SHIP
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-[var(--gb-text-muted)]">Loading parts...</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12">
+            {parts.map((part) => (
+              <a
+                key={part.id}
+                href={part.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group gb-card overflow-hidden hover:border-orange-500 transition-all"
+              >
+                <div className="aspect-square bg-[var(--gb-dark)] relative overflow-hidden">
+                  <img 
+                    src={part.image} 
+                    alt={part.name}
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+                  />
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    <span className="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">
+                      {part.source}
                     </span>
-                  )}
+                    {part.freeShipping && (
+                      <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
+                        FREE SHIP
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
-                  {part.name}
-                </h3>
-                <p className="text-xs text-[var(--gb-text-muted)] mb-3">
-                  Fits: {part.fits.join(', ')}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold text-orange-500">
-                    ${part.price.toFixed(2)}
-                  </span>
-                  <ExternalLink size={16} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
+                <div className="p-4">
+                  <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
+                    {part.name}
+                  </h3>
+                  <p className="text-xs text-[var(--gb-text-muted)] mb-3">
+                    Fits: {part.fits.join(', ')}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-bold text-orange-500">
+                      ${part.price.toFixed(2)}
+                    </span>
+                    <ExternalLink size={16} className="text-[var(--gb-text-muted)] group-hover:text-orange-500 transition-colors" />
+                  </div>
                 </div>
-              </div>
-            </a>
-          ))}
-        </div>
+              </a>
+            ))}
+          </div>
+        )}
 
         {/* More Vendors */}
         <div className="mb-12">
