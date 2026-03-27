@@ -5,48 +5,62 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, TrendingUp, Wrench, Car } from 'lucide-react';
 
-const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string }> = {
+const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string; popular: string; priceRange: string }> = {
   'monte-carlo': {
     name: 'Monte Carlo',
     years: '1978-1988',
     hero: '/images/cars/monte-carlo-ss.jpg',
-    description: 'The Monte Carlo SS dominated NASCAR in the 1980s. The Aerocoupe is especially sought after by collectors.',
+    description: 'The Monte Carlo SS dominated NASCAR in the 1980s. The Aerocoupe (1986-1988) is the most collectible variant.',
+    popular: 'SS Aerocoupe',
+    priceRange: '$8K - $50K',
   },
   'grand-national': {
     name: 'Grand National',
     years: '1982-1987',
     hero: '/images/cars/grand-national.jpg',
-    description: 'Buick\'s turbocharged legend. The Grand National was the fastest production car in America in 1987.',
+    description: 'Buick\'s turbocharged legend. The GNX is the ultimate collectible, with only 547 built.',
+    popular: 'GNX',
+    priceRange: '$25K - $150K+',
   },
   'cutlass-supreme': {
     name: 'Cutlass Supreme / 442',
     years: '1978-1988',
     hero: '/images/cars/cutlass-442.jpg',
     description: 'Oldsmobile\'s muscle icon. The Hurst Olds and 442 are the most collectible variants.',
+    popular: 'Hurst Olds 442',
+    priceRange: '$10K - $45K',
   },
   'regal': {
     name: 'Buick Regal',
     years: '1978-1987',
     hero: '/images/cars/regal-t-type.jpg',
-    description: 'The T-Type Regal offered turbo performance before the Grand National made it famous.',
+    description: 'The T-Type offered turbo performance. The Grand National made the Regal chassis famous.',
+    popular: 'T-Type Turbo',
+    priceRange: '$8K - $35K',
   },
   'el-camino': {
     name: 'El Camino',
     years: '1978-1987',
     hero: '/images/cars/el-camino.jpg',
     description: 'Half car, half truck, all muscle. The SS Conquista is the most desirable trim.',
+    popular: 'SS Conquista',
+    priceRange: '$6K - $30K',
   },
   'malibu': {
     name: 'Chevy Malibu',
     years: '1978-1983',
     hero: '/images/cars/malibu.jpg',
-    description: 'The Malibu was the more affordable G-Body, but classic styling makes it a great platform for restoration.',
+    description: 'The Malibu was the budget G-Body. Great platform for LS swaps and restomods.',
+    popular: 'Classic Landau',
+    priceRange: '$5K - $20K',
   },
   'grand-prix': {
     name: 'Pontiac Grand Prix',
     years: '1978-1987',
     hero: '/images/cars/grand-prix.jpg',
-    description: 'Pontiac\'s personal luxury car. The LJ and SJ trims offer the most features.',
+    description: 'Pontiac\'s personal luxury car. The LJ and SJ trims are the most feature-loaded.',
+    popular: 'LJ Turbo',
+    priceRange: '$5K - $25K',
   },
 };
 
@@ -196,12 +210,12 @@ export default function ListingsPage() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
               <div className="text-sm text-[var(--gb-text-muted)] mb-2">Price Range</div>
-              <div className="text-3xl font-bold text-orange-500">$5K - $75K</div>
+              <div className="text-3xl font-bold text-orange-500">{config.priceRange}</div>
               <div className="text-xs text-[var(--gb-text-muted)] mt-1">Based on recent sales</div>
             </div>
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
               <div className="text-sm text-[var(--gb-text-muted)] mb-2">Most Popular</div>
-              <div className="text-3xl font-bold">SS Aerocoupe</div>
+              <div className="text-3xl font-bold">{config.popular}</div>
               <div className="text-xs text-[var(--gb-text-muted)] mt-1">{config.name}</div>
             </div>
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
@@ -263,8 +277,8 @@ export default function ListingsPage() {
                   <span>— Lighter weight, carbureted</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-orange-500 font-bold">Aerocoupe</span>
-                  <span>— Most collectible (1986-1988)</span>
+                  <span className="text-orange-500 font-bold">{config.popular}</span>
+                  <span>— Most collectible variant</span>
                 </li>
               </ul>
             </div>
