@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, ExternalLink, ShoppingCart, Filter, Grid3X3, List, Wrench } from 'lucide-react';
-import { MIKES_MONTES_PARTS, PART_CATEGORIES } from '@/lib/parts';
+import { Search, ExternalLink, Filter, Package, Truck, Wrench, CheckCircle } from 'lucide-react';
+import { MIKES_MONTES_PARTS, PART_CATEGORIES, VENDORS, FORUMS } from '@/lib/parts';
 
 export default function PartsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Parts');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const filteredParts = MIKES_MONTES_PARTS.filter(part => {
     if (selectedCategory !== 'All Parts' && part.category !== selectedCategory) return false;
@@ -38,32 +37,45 @@ export default function PartsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">G-Body Parts</h1>
           <p className="text-[var(--gb-text-secondary)]">
-            Real parts from trusted vendors — Mike's Montes, GBodyParts, and more
+            Real parts from trusted vendors — exact fitment for your Monte Carlo, Grand National, Cutlass, and more
           </p>
         </div>
 
         {/* Featured Vendor */}
         <div className="gb-card p-6 mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Wrench className="text-orange-500" size={32} />
-            <div>
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
+            <Wrench className="text-orange-500 flex-shrink-0" size={32} />
+            <div className="flex-1">
               <h2 className="text-xl font-bold">Mike's Montes</h2>
-              <p className="text-sm text-[var(--gb-text-muted)]">Your #1 source for 1981-1988 Monte Carlo SS and G-body parts</p>
+              <p className="text-sm text-[var(--gb-text-muted)]">
+                Your #1 source for 1981-1988 Monte Carlo SS and G-body parts. 
+                New, used, GM, and aftermarket. Free shipping on select items.
+              </p>
             </div>
             <a 
               href="https://www.mikesmontes.com/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="ml-auto gb-btn gb-btn-primary"
+              className="gb-btn gb-btn-primary flex items-center gap-2"
             >
-              <ExternalLink size={16} className="mr-2" />
+              <ExternalLink size={16} />
               Shop Direct
             </a>
           </div>
-          <p className="text-[var(--gb-text-secondary)] text-sm">
-            Mike's Montes has been serving the G-Body community for years. New, used, GM, and aftermarket parts 
-            for Monte Carlo SS, Grand National, Cutlass, Regal, El Camino, Malibu and more. Free shipping on select items.
-          </p>
+          <div className="flex flex-wrap gap-3 text-sm">
+            <span className="flex items-center gap-1 text-green-400">
+              <CheckCircle size={14} />
+              In-Stock Items
+            </span>
+            <span className="flex items-center gap-1 text-[var(--gb-text-muted)]">
+              <Truck size={14} />
+              Ships in 2-3 Business Days
+            </span>
+            <span className="flex items-center gap-1 text-[var(--gb-text-muted)]">
+              <Package size={14} />
+              130+ Parts Available
+            </span>
+          </div>
         </div>
 
         {/* Filters */}
@@ -74,14 +86,14 @@ export default function PartsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search parts..."
+              placeholder="Search parts (e.g., weatherstrip, floor mats, switches)..."
               className="w-full pl-12 pr-4 py-3 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white placeholder-[var(--gb-text-muted)] focus:outline-none focus:border-orange-500"
             />
           </div>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-3 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white focus:outline-none focus:border-orange-500"
+            className="px-4 py-3 bg-[var(--gb-surface)] border border-[var(--gb-border)] rounded-lg text-white focus:outline-none focus:border-orange-500 min-w-[200px]"
           >
             {PART_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>{cat}</option>
@@ -90,7 +102,7 @@ export default function PartsPage() {
         </div>
 
         {/* Parts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-12">
           {filteredParts.map((part) => (
             <a
               key={part.id}
@@ -108,17 +120,22 @@ export default function PartsPage() {
                     (e.target as HTMLImageElement).src = '/images/cars/placeholder.jpg';
                   }}
                 />
-                <div className="absolute top-3 left-3">
+                <div className="absolute top-3 left-3 flex gap-2">
                   <span className="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">
                     {part.source}
                   </span>
+                  {part.freeShipping && (
+                    <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">
+                      FREE SHIP
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
                   {part.name}
                 </h3>
-                <p className="text-sm text-[var(--gb-text-muted)] mb-3">
+                <p className="text-xs text-[var(--gb-text-muted)] mb-3">
                   Fits: {part.fits.join(', ')}
                 </p>
                 <div className="flex items-center justify-between">
@@ -132,92 +149,54 @@ export default function PartsPage() {
           ))}
         </div>
 
-        {/* Other Vendors */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6">More G-Body Parts Vendors</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <a
-              href="https://gbodyparts.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gb-card p-6 hover:border-orange-500 transition-colors group"
-            >
-              <h3 className="font-bold text-lg group-hover:text-orange-400">GBodyParts.com</h3>
-              <p className="text-sm text-[var(--gb-text-muted)] mt-2">
-                Wide selection of G-Body restoration and performance parts
-              </p>
-              <div className="mt-4 text-orange-500 text-sm font-medium">
-                Visit Store →
-              </div>
-            </a>
-            <a
-              href="https://turbobuick.com/forums/parts-for-sale.35/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gb-card p-6 hover:border-orange-500 transition-colors group"
-            >
-              <h3 className="font-bold text-lg group-hover:text-orange-400">TurboBuick.com Marketplace</h3>
-              <p className="text-sm text-[var(--gb-text-muted)] mt-2">
-                Parts for sale by community members - Grand National, T-Type, Turbo T
-              </p>
-              <div className="mt-4 text-orange-500 text-sm font-medium">
-                View Listings →
-              </div>
-            </a>
-            <a
-              href="https://turbobuick.com/forums/cars-for-sale.39/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gb-card p-6 hover:border-orange-500 transition-colors group"
-            >
-              <h3 className="font-bold text-lg group-hover:text-orange-400">TurboBuick Cars For Sale</h3>
-              <p className="text-sm text-[var(--gb-text-muted)] mt-2">
-                Grand Nationals, T-Types, Turbo T's for sale by owner
-              </p>
-              <div className="mt-4 text-orange-500 text-sm font-medium">
-                View Cars →
-              </div>
-            </a>
-          </div>
-        </div>
-
-        {/* Forum Links */}
-        <div className="mt-12 gb-card p-6">
-          <h2 className="font-bold text-lg mb-4">G-Body Forums & Communities</h2>
+        {/* More Vendors */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">More G-Body Vendors</h2>
           <div className="grid md:grid-cols-2 gap-4">
-            <a
-              href="https://turbobuick.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-[var(--gb-dark)] rounded-lg hover:bg-[var(--gb-surface)] transition-colors"
-            >
-              <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 font-bold">
-                TB
-              </div>
-              <div>
-                <h4 className="font-medium">TurboBuick.com</h4>
-                <p className="text-sm text-[var(--gb-text-muted)]">Grand National & T-Type community</p>
-              </div>
-            </a>
-            <a
-              href="https://gbodyforum.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 bg-[var(--gb-dark)] rounded-lg hover:bg-[var(--gb-surface)] transition-colors"
-            >
-              <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 font-bold">
-                GB
-              </div>
-              <div>
-                <h4 className="font-medium">GBodyForum.com</h4>
-                <p className="text-sm text-[var(--gb-text-muted)]">All G-Body discussion</p>
-              </div>
-            </a>
+            {VENDORS.map((vendor) => (
+              <a
+                key={vendor.name}
+                href={vendor.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="gb-card p-6 hover:border-orange-500 transition-colors group"
+              >
+                <h3 className="font-bold text-lg group-hover:text-orange-400">{vendor.name}</h3>
+                <p className="text-sm text-[var(--gb-text-secondary)] mt-2 mb-3">
+                  {vendor.description}
+                </p>
+                <span className="text-orange-500 text-sm font-medium">{vendor.highlight}</span>
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Back Link */}
-        <div className="mt-8 text-center">
+        {/* Forums */}
+        <div className="gb-card p-6 mb-8">
+          <h2 className="text-xl font-bold mb-4">G-Body Forums & Community</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {FORUMS.map((forum) => (
+              <a
+                key={forum.name}
+                href={forum.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-4 bg-[var(--gb-dark)] rounded-lg hover:bg-[var(--gb-surface)] transition-colors group"
+              >
+                <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 font-bold text-lg">
+                  {forum.name.charAt(0)}
+                </div>
+                <div>
+                  <h4 className="font-medium group-hover:text-orange-400">{forum.name}</h4>
+                  <p className="text-sm text-[var(--gb-text-muted)]">{forum.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
           <Link href="/" className="text-orange-500 hover:text-orange-400">
             ← Back to Home
           </Link>
