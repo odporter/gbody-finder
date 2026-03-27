@@ -215,19 +215,18 @@ export default function Home() {
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-10">
-            <div className="relative">
+            <form action="/search" method="get" className="relative">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" size={22} />
               <input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by model, year, location, engine..."
+                name="q"
+                placeholder="Find any part... (door seals, window switch, T-top kit)"
                 className="w-full pl-14 pr-32 py-5 bg-black/60 backdrop-blur-sm border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30 text-lg"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors">
-                Search
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors">
+                Find Parts
               </button>
-            </div>
+            </form>
           </div>
 
           {/* Stats */}
