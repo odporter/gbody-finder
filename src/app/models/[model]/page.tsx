@@ -106,7 +106,7 @@ const MODEL_DATA: Record<string, {
     name: 'Chevy Malibu',
     years: '1978-1983',
     hero: '/images/cars/malibu.jpg',
-    production: 1.2M,
+    production: 1200000,
     description: 'The budget G-Body that\'s perfect for LS swaps and restomods.',
     history: 'The Malibu was Chevrolet\'s entry-level G-Body. Lighter and simpler than the Monte Carlo, it became a favorite for drag racers and LS swap builders.',
     bestYears: '1980-1983 (lighter weight)',
