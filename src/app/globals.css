@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gb-dark: #0a0a0a;
+  --gb-surface: #141414;
+  --gb-surface-hover: #1a1a1a;
+  --gb-border: #262626;
+  --gb-orange: #ff6b00;
+  --gb-orange-dark: #cc5500;
+  --gb-text: #ffffff;
+  --gb-text-secondary: #a1a1aa;
+  --gb-text-muted: #71717a;
+  --gb-chrome: #c0c0c0;
+  --gb-red: #dc2626;
+  --gb-green: #16a34a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--gb-dark);
+  color: var(--gb-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Chrome text effect */
+.chrome-text {
+  background: linear-gradient(180deg, #ffffff 0%, #c0c0c0 50%, #808080 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gb-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gb-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gb-text-muted);
+}
+
+/* Buttons */
+.gb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.gb-btn-primary {
+  background: var(--gb-orange);
+  color: white;
+}
+
+.gb-btn-primary:hover {
+  background: var(--gb-orange-dark);
+}
+
+.gb-btn-secondary {
+  background: var(--gb-surface);
+  color: var(--gb-text);
+  border: 1px solid var(--gb-border);
+}
+
+.gb-btn-secondary:hover {
+  background: var(--gb-surface-hover);
+  border-color: var(--gb-orange);
+}
+
+/* Cards */
+.gb-card {
+  background: var(--gb-surface);
+  border: 1px solid var(--gb-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.gb-card:hover {
+  border-color: var(--gb-orange);
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-gradient {
+  background: linear-gradient(135deg, var(--gb-dark) 0%, #1a0a00 50%, var(--gb-dark) 100%);
 }
