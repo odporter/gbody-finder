@@ -5,14 +5,15 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, TrendingUp, Wrench, Car } from 'lucide-react';
 
-const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string; popular: string; priceRange: string }> = {
+const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string; popular: string; priceRange: string; appreciation: number }> = {
   'monte-carlo': {
     name: 'Monte Carlo',
     years: '1978-1988',
     hero: '/images/cars/monte-carlo-ss.jpg',
     description: 'The Monte Carlo SS dominated NASCAR in the 1980s. The Aerocoupe (1986-1988) is the most collectible variant.',
     popular: 'SS Aerocoupe',
-    priceRange: '$8K - $50K',
+    priceRange: '$12K - $55K',
+    appreciation: 115,
   },
   'grand-national': {
     name: 'Grand National',
@@ -20,7 +21,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/grand-national.jpg',
     description: 'Buick\'s turbocharged legend. The GNX is the ultimate collectible, with only 547 built.',
     popular: 'GNX',
-    priceRange: '$25K - $150K+',
+    priceRange: '$25K - $165K+',
+    appreciation: 150,
   },
   'cutlass-supreme': {
     name: 'Cutlass Supreme / 442',
@@ -28,7 +30,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/cutlass-442.jpg',
     description: 'Oldsmobile\'s muscle icon. The Hurst Olds and 442 are the most collectible variants.',
     popular: 'Hurst Olds 442',
-    priceRange: '$10K - $45K',
+    priceRange: '$8K - $45K',
+    appreciation: 113,
   },
   'regal': {
     name: 'Buick Regal',
@@ -36,7 +39,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/regal-t-type.jpg',
     description: 'The T-Type offered turbo performance. The Grand National made the Regal chassis famous.',
     popular: 'T-Type Turbo',
-    priceRange: '$8K - $35K',
+    priceRange: '$6K - $35K',
+    appreciation: 133,
   },
   'el-camino': {
     name: 'El Camino',
@@ -44,7 +48,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/el-camino.jpg',
     description: 'Half car, half truck, all muscle. The SS Conquista is the most desirable trim.',
     popular: 'SS Conquista',
-    priceRange: '$6K - $30K',
+    priceRange: '$5K - $35K',
+    appreciation: 136,
   },
   'malibu': {
     name: 'Chevy Malibu',
@@ -52,7 +57,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/malibu.jpg',
     description: 'The Malibu was the budget G-Body. Great platform for LS swaps and restomods.',
     popular: 'Classic Landau',
-    priceRange: '$5K - $20K',
+    priceRange: '$4K - $25K',
+    appreciation: 159,
   },
   'grand-prix': {
     name: 'Pontiac Grand Prix',
@@ -60,7 +66,8 @@ const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string;
     hero: '/images/cars/grand-prix.jpg',
     description: 'Pontiac\'s personal luxury car. The LJ and SJ trims are the most feature-loaded.',
     popular: 'LJ Turbo',
-    priceRange: '$5K - $25K',
+    priceRange: '$4K - $28K',
+    appreciation: 156,
   },
 };
 
@@ -206,7 +213,12 @@ export default function ListingsPage() {
 
         {/* Market Insights */}
         <div className="gb-card p-8 mb-12">
-          <h3 className="text-2xl font-bold mb-6">Market Insights</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold">Market Value</h3>
+            <Link href="/market" className="text-orange-500 hover:text-orange-400 text-sm">
+              View Full Market Tracker →
+            </Link>
+          </div>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
               <div className="text-sm text-[var(--gb-text-muted)] mb-2">Price Range</div>
@@ -214,13 +226,13 @@ export default function ListingsPage() {
               <div className="text-xs text-[var(--gb-text-muted)] mt-1">Based on recent sales</div>
             </div>
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
-              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Most Popular</div>
+              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Most Valuable</div>
               <div className="text-3xl font-bold">{config.popular}</div>
               <div className="text-xs text-[var(--gb-text-muted)] mt-1">{config.name}</div>
             </div>
             <div className="text-center p-4 bg-[var(--gb-dark)] rounded-xl">
-              <div className="text-sm text-[var(--gb-text-muted)] mb-2">Value Trend</div>
-              <div className="text-3xl font-bold text-green-400">↑ 12% YoY</div>
+              <div className="text-sm text-[var(--gb-text-muted)] mb-2">5-Year Return</div>
+              <div className="text-3xl font-bold text-green-400">+{config.appreciation || '115'}%</div>
               <div className="text-xs text-[var(--gb-text-muted)] mt-1">G-Body market rising</div>
             </div>
           </div>
