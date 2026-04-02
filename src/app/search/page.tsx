@@ -1,19 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Search, Play, ExternalLink, ShoppingCart, Wrench } from 'lucide-react';
+
+interface PartResult {
+  name: string;
+  price: string;
+  url: string;
+  source: string;
+  fits: string[];
+}
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{ parts?: PartResult[]; youtubeSearch?: string } | null>(null);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    
+
     setLoading(true);
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -30,13 +37,13 @@ export default function SearchPage() {
       {/* Header */}
       <header className="bg-[var(--gb-surface)] border-b border-[var(--gb-border)]">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="text-xl font-bold">
+          <Link href="/" className="text-xl font-bold">
             <span className="chrome-text">G-BODY</span> FINDER
-          </a>
+          </Link>
           <nav className="flex items-center gap-6">
-            <a href="/listings" className="text-[var(--gb-text-secondary)] hover:text-white">Listings</a>
-            <a href="/parts" className="text-[var(--gb-text-secondary)] hover:text-white">Parts</a>
-            <a href="/build-calculator" className="text-[var(--gb-text-secondary)] hover:text-white">Build Calc</a>
+            <Link href="/listings" className="text-[var(--gb-text-secondary)] hover:text-white">Listings</Link>
+            <Link href="/parts" className="text-[var(--gb-text-secondary)] hover:text-white">Parts</Link>
+            <Link href="/build-calculator" className="text-[var(--gb-text-secondary)] hover:text-white">Build Calc</Link>
           </nav>
         </div>
       </header>
@@ -48,7 +55,7 @@ export default function SearchPage() {
           <p className="text-[var(--gb-text-secondary)] mb-8">
             Search for parts, get tutorial videos, and buy from trusted vendors
           </p>
-          
+
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
             <div className="relative">
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--gb-text-muted)]" size={24} />
@@ -68,7 +75,7 @@ export default function SearchPage() {
               </button>
             </div>
           </form>
-          
+
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             <span className="text-sm text-[var(--gb-text-muted)]">Popular:</span>
             {['door seals', 'window switch', 'T-top kit', 'floor mats', 'bumper'].map((term) => (
@@ -87,14 +94,14 @@ export default function SearchPage() {
         {results && (
           <div className="space-y-8">
             {/* Parts */}
-            {results.parts?.length > 0 && (
+            {results.parts && results.parts.length > 0 && (
               <div>
                 <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                   <ShoppingCart className="text-orange-500" size={24} />
                   Parts
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {results.parts.map((part: any, i: number) => (
+                  {results.parts.map((part, i) => (
                     <a
                       key={i}
                       href={part.url}
@@ -105,7 +112,7 @@ export default function SearchPage() {
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-semibold group-hover:text-orange-400">{part.name}</h3>
                         {part.price && (
-                          <span className="text-orange-500 font-bold">{part.price}</span>
+                          <span className="text-orange-500 font-bold whitespace-nowrap ml-2">{part.price}</span>
                         )}
                       </div>
                       <p className="text-sm text-[var(--gb-text-muted)] mb-2">
@@ -130,7 +137,7 @@ export default function SearchPage() {
                 Video Tutorials
               </h2>
               <a
-                href={results.youtubeSearch}
+                href={results.youtubeSearch || `https://www.youtube.com/results?search_query=${encodeURIComponent(query + ' g-body installation')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="gb-card p-6 hover:border-red-500 transition-colors group block"
@@ -141,7 +148,7 @@ export default function SearchPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg group-hover:text-red-400">
-                      Search "{query}" on YouTube
+                      Search &ldquo;{query}&rdquo; on YouTube
                     </h3>
                     <p className="text-sm text-[var(--gb-text-muted)]">
                       Find installation tutorials, how-to videos, and DIY guides
@@ -185,7 +192,7 @@ export default function SearchPage() {
         {!results && !loading && (
           <div className="text-center py-12">
             <p className="text-[var(--gb-text-muted)]">
-              Type any part name above and I'll find where to buy it and show you how to install it.
+              Type any part name above and I&apos;ll find where to buy it and show you how to install it.
             </p>
           </div>
         )}
