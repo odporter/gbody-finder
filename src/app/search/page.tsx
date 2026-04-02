@@ -4,6 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Search, Play, ExternalLink, ShoppingCart, Wrench } from 'lucide-react';
 
+export const metadata = {
+  title: 'G-Body Parts Search | Find Parts for Monte Carlo SS, Grand National & More',
+  description: 'Search thousands of G-Body parts across Mike\'s Montes, Summit Racing, JEGS, and RockAuto. Door seals, window switches, weatherstrip, T-top kits and more.',
+};
+
 interface PartResult {
   name: string;
   price: string;

@@ -4,6 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Gauge, Cog, DollarSign, Zap, Save, Trash2, CheckCircle } from 'lucide-react';
 
+export const metadata = {
+  title: 'G-Body Build Calculator | LS Swap Cost & HP Estimator',
+  description: 'Plan your G-Body LS swap or stroker build. Get HP estimates, torque figures, and cost projections for LS3, LS1, 350 small block, 383 stroker, and more.',
+};
+
 const ENGINE_OPTIONS = [
   {
     id: 'ls3', name: 'LS3 6.2L', hp: '430-500', hpRange: [430, 500],

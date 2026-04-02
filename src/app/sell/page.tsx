@@ -4,6 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { DollarSign, Camera, Shield, TrendingUp, ArrowRight, CheckCircle, Star, Users } from 'lucide-react';
 
+export const metadata = {
+  title: 'Sell Your G-Body | List a Car on G-Body Finder',
+  description: 'List your 1978-1988 G-Body on G-Body Finder. Reach 40,000+ monthly enthusiasts. No commission, no listing fees for Basic. Featured listings from $19.',
+};
+
 const LISTING_TIERS = [
   {
     id: 'basic',

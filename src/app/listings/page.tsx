@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, TrendingUp, Wrench, Car } from 'lucide-react';
 
+export const metadata = {
+  title: 'G-Body Listings | Browse Classic Monte Carlo, Grand National & More',
+  description: 'Browse live G-Body listings from Facebook, eBay, Bring a Trailer, Cars.com and more. Find your 1978-1988 Monte Carlo SS, Grand National, Cutlass 442 and more.',
+};
+
 const MODEL_CONFIGS: Record<string, { name: string; years: string; hero: string; description: string; popular: string; priceRange: string; appreciation: number }> = {
   'monte-carlo': {
     name: 'Monte Carlo',

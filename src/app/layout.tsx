@@ -13,6 +13,24 @@ export const metadata: Metadata = {
   },
 };
 
+const ORGANIZATION_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "G-Body Finder",
+  "url": "https://gbodyfinder.com",
+  "logo": "https://gbodyfinder.com/logo.svg",
+  "description": "The #1 marketplace for G-Body classic muscle cars. Monte Carlo SS, Grand National, Cutlass 442, El Camino, Malibu, Regal, and Grand Prix from 1978-1988.",
+  "sameAs": [
+    "https://www.facebook.com/gbodyfinder",
+    "https://www.instagram.com/gbodyfinder"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hello@gbodyfinder.com",
+    "contactType": "Customer Support"
+  }
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,6 +39,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
+        />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

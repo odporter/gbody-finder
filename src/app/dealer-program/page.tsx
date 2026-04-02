@@ -4,6 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle, ArrowRight, Users, BarChart3, Zap, Star, Shield, Phone, Mail } from 'lucide-react';
 
+export const metadata = {
+  title: 'G-Body Dealer Program | List Unlimited Cars for $99/month',
+  description: 'The only dedicated G-Body dealer platform. Reach 40,000+ monthly enthusiasts. Unlimited listings, analytics, lead management. $99/month. Apply today.',
+};
+
 const DEALER_FEATURES = [
   {
     icon: BarChart3,

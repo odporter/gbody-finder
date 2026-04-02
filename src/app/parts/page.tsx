@@ -471,7 +471,7 @@ export default function PartsPage() {
                       </a>
                     </h3>
                     <p className="text-[10px] text-[var(--gb-text-muted)] mb-2.5 leading-tight">
-                      Fits: {part.fits.slice(0, 2).join(', ')}{part.fits.length > 2 ? ` +${part.fits.length - 2}` : ''}
+                      <span className="text-orange-400/70 font-medium">Fits 1978-1988 G-Body</span> — {part.fits.slice(0, 2).join(', ')}{part.fits.length > 2 ? ` +${part.fits.length - 2}` : ''}
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-orange-400 price-tag">

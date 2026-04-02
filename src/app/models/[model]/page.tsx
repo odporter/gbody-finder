@@ -138,13 +138,53 @@ const MODEL_DATA: Record<string, {
   },
 };
 
+export async function generateMetadata({ params }: { params: { model: string } }) {
+  const modelId = params?.model as string;
+  const model = MODEL_DATA[modelId] || MODEL_DATA['monte-carlo'];
+  return {
+    title: `${model.name} (${model.years}) — Specs, History & Market Value | G-Body Finder`,
+    description: `${model.description} Complete guide: specs, best years, collectible variants, price ranges, and appreciation data. ${model.name} from ${model.years}.`,
+    openGraph: {
+      title: `${model.name} | G-Body Finder`,
+      description: model.description,
+    },
+  };
+}
+
 export default function ModelPage() {
   const params = useParams();
   const modelId = params?.model as string || 'monte-carlo';
   const model = MODEL_DATA[modelId] || MODEL_DATA['monte-carlo'];
 
+  const [startYear, endYear] = model.years.split('-').map(Number);
+
+  const vehicleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Vehicle",
+    "name": model.name,
+    "manufacturer": {
+      "@type": "Organization",
+      "name": modelId === 'grand-national' || modelId === 'regal' ? 'Buick' :
+              modelId === 'cutlass-supreme' ? 'Oldsmobile' :
+              modelId === 'grand-prix' ? 'Pontiac' :
+              modelId === 'el-camino' ? 'Chevrolet' :
+              modelId === 'malibu' ? 'Chevrolet' : 'Chevrolet',
+    },
+    "productionDate": `${startYear}-${endYear}`,
+    "vehicleModelDate": `${startYear}`,
+    "bodyType": "Coupe",
+    "vehicleConfiguration": "Front-engine, rear-wheel-drive, 2-door coupe",
+    "numberProduced": model.production,
+    "description": model.description,
+    "keywords": `${model.name}, G-Body, classic car, muscle car, ${model.years}`,
+  };
+
   return (
     <div className="min-h-screen bg-[var(--gb-dark)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(vehicleJsonLd) }}
+      />
       {/* Header */}
       <header className="bg-[var(--gb-surface)]/95 backdrop-blur border-b border-[var(--gb-border)] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">

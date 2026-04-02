@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, ChevronRight, Car, Star, ArrowRight, TrendingUp, Flame, Wrench, Calculator, Gauge, Zap, Cog, Timer, TrendingDown, Bell, Mail } from 'lucide-react';
+import { Search, ChevronRight, Car, Star, ArrowRight, TrendingUp, Flame, Wrench, Calculator, Gauge, Zap, Cog, Timer, TrendingDown, Bell, Mail, Shield, Users, Award, BarChart3 } from 'lucide-react';
 
 // G-Body Models with real images
 const GBODY_MODELS = [
@@ -200,7 +200,18 @@ export default function Home() {
               </div>
             </div>
             <p className="text-[var(--gb-text-muted)] text-sm mt-2 ml-1">
-              The #1 Marketplace for G-Body Classics
+              The Marketplace for the World's Most Undervalued Muscle Car
+            </p>
+          </div>
+
+          {/* Tagline Block */}
+          <div className="mb-10 animate-fade-in-up max-w-2xl" style={{ animationDelay: '50ms' }}>
+            <p className="text-xl md:text-2xl font-light text-white/80 leading-relaxed mb-4">
+              While the world obsesses over Mustangs and Camaros,{' '}
+              <span className="text-orange-400 font-semibold">G-Bodies are quietly becoming the smartest investment</span> in American automotive history.
+            </p>
+            <p className="text-sm text-white/40 leading-relaxed">
+              Monte Carlo SS. Grand National. Hurst Olds. 442. These aren't just cars — they're a generation's defining machines, now appreciating faster than almost any other segment in classic muscle.
             </p>
           </div>
 
@@ -418,6 +429,105 @@ export default function Home() {
             <Link href="/build-calculator" className="gb-btn gb-btn-primary">
               <Calculator size={16} className="mr-2" />
               Open Full Build Calculator
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Top Collectible Variants */}
+      <section className="py-20 bg-[var(--gb-surface)] border-y border-[var(--gb-border)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-full text-orange-400 text-xs font-bold uppercase tracking-widest mb-4">
+              <Award size={12} />
+              Collector Focus
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              The <span className="chrome-orange">Top Collectible</span> Variants
+            </h2>
+            <p className="text-[var(--gb-text-secondary)] max-w-lg mx-auto text-sm">
+              These limited-production G-Bodies have delivered returns that rival fine art and vintage Porsche. Here's where the market is hottest right now.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {[
+              {
+                name: 'GNX (1987)',
+                model: 'Grand National',
+                production: '547 built',
+                priceRange: '$150K–$250K+',
+                appreciation: '+340%',
+                note: 'The ultimate G-Body. 276 HP intercooled turbo, the fastest American car of its era. Values have tripled since 2020.',
+                icon: '🔥',
+                color: 'from-red-600/20 to-orange-600/10',
+                borderColor: 'border-red-500/30',
+              },
+              {
+                name: 'Aerocoupe (1986-88)',
+                model: 'Monte Carlo SS',
+                production: '6,052 built',
+                priceRange: '$35K–$65K',
+                appreciation: '+180%',
+                note: 'NASCAR homologation special. Louvered rear window, sloping roofline. Cleaner lines than any other Monte Carlo.',
+                icon: '🏁',
+                color: 'from-blue-600/20 to-cyan-600/10',
+                borderColor: 'border-blue-500/30',
+              },
+              {
+                name: 'Hurst Olds (1983-84)',
+                model: 'Cutlass Supreme',
+                production: '3,501 built',
+                priceRange: '$40K–$65K',
+                appreciation: '+165%',
+                note: 'Hurst shifter, W41 performance package, dual exhaust. Oldsmobile\'s answer to the Monte Carlo SS.',
+                icon: '⚡',
+                color: 'from-purple-600/20 to-pink-600/10',
+                borderColor: 'border-purple-500/30',
+              },
+              {
+                name: 'Z28 (1984)',
+                model: 'Camaro',
+                production: '28,000 built',
+                priceRange: '$30K–$50K',
+                appreciation: '+155%',
+                note: 'The IROC-Z spec small-block. Fuel-injected 305 made 225 HP. Best balance of performance and affordability in the G-Body world.',
+                icon: '🏆',
+                color: 'from-yellow-600/20 to-amber-600/10',
+                borderColor: 'border-yellow-500/30',
+              },
+            ].map((car) => (
+              <div
+                key={car.name}
+                className={`relative rounded-2xl border p-6 bg-gradient-to-br ${car.color} overflow-hidden`}
+              >
+                <div className={`absolute inset-0 border ${car.borderColor} rounded-2xl pointer-events-none`} />
+                <div className="text-3xl mb-3">{car.icon}</div>
+                <h3 className="font-bold text-lg text-white mb-0.5">{car.name}</h3>
+                <p className="text-xs text-orange-400 font-semibold mb-3">{car.model}</p>
+                <p className="text-xs text-[var(--gb-text-muted)] leading-relaxed mb-4">{car.note}</p>
+                <div className="border-t border-white/10 pt-3 space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-[var(--gb-text-muted)]">Production</span>
+                    <span className="text-xs font-medium text-white">{car.production}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-[var(--gb-text-muted)]">Price Range</span>
+                    <span className="text-xs font-bold text-orange-400">{car.priceRange}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-[var(--gb-text-muted)]">5-Year Return</span>
+                    <span className="text-xs font-bold text-green-400">{car.appreciation}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/market" className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-400 text-sm font-medium transition-colors">
+              <BarChart3 size={14} />
+              View Full Market Tracker <ChevronRight size={14} />
             </Link>
           </div>
         </div>
