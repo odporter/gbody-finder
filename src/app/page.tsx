@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, ChevronRight, Car, Star, ArrowRight, TrendingUp, Flame, Wrench, Calculator, Gauge, Zap, Cog, Timer, TrendingDown } from 'lucide-react';
+import { Search, ChevronRight, Car, Star, ArrowRight, TrendingUp, Flame, Wrench, Calculator, Gauge, Zap, Cog, Timer, TrendingDown, Bell, Mail } from 'lucide-react';
 
 // G-Body Models with real images
 const GBODY_MODELS = [
@@ -106,6 +106,59 @@ const MARKET_INSIGHTS = [
   { label: 'Models Tracked', value: '7', icon: Car, color: 'text-orange-400' },
   { label: '5-Year Avg Return', value: '+137%', icon: Gauge, color: 'text-blue-400' },
 ];
+
+function NewsletterSignup() {
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    // Store locally for now — in production, connect to email service
+    try {
+      const existing = JSON.parse(localStorage.getItem('gbf-newsletter') || '[]');
+      if (!existing.includes(email)) {
+        existing.push(email);
+        localStorage.setItem('gbf-newsletter', JSON.stringify(existing));
+      }
+    } catch {}
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-2xl text-center">
+        <div className="text-green-400 font-bold mb-1">✅ You&apos;re subscribed!</div>
+        <p className="text-sm text-[var(--gb-text-secondary)]">
+          We&apos;ll send you the best G-Body deals and market updates. Check your inbox soon.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <div className="relative flex-1">
+        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--gb-text-muted)]" size={16} />
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          className="w-full pl-11 pr-4 py-3.5 bg-[var(--gb-dark)] border border-[var(--gb-border)] rounded-xl text-white placeholder-[var(--gb-text-muted)] text-sm focus:outline-none focus:border-orange-500"
+        />
+      </div>
+      <button
+        type="submit"
+        className="px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-colors text-sm whitespace-nowrap flex items-center justify-center gap-2"
+      >
+        <Bell size={14} />
+        Get Alerts
+      </button>
+    </form>
+  );
+}
 
 const POPULAR_SEARCHES = [
   'door seals', 'window switch', 'T-top kit',
@@ -497,6 +550,27 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter + Email Alerts */}
+      <section className="py-20 bg-[var(--gb-surface)] border-y border-[var(--gb-border)]">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-500/10 border border-orange-500/20 rounded-full text-orange-400 text-xs font-bold uppercase tracking-widest mb-4">
+            <Bell size={12} />
+            Free Email Alerts
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black mb-3">
+            Never Miss a <span className="chrome-orange">Deal</span>
+          </h2>
+          <p className="text-[var(--gb-text-secondary)] mb-8 max-w-lg mx-auto">
+            Get notified when a Grand National drops below $40K, or when new Monte Carlo SS listings go up.
+            Join 2,400+ G-Body enthusiasts getting free market alerts.
+          </p>
+          <NewsletterSignup />
+          <p className="text-[10px] text-[var(--gb-text-muted)] mt-3">
+            No spam. Unsubscribe anytime. We store emails locally — no cloud marketing services.
+          </p>
         </div>
       </section>
 

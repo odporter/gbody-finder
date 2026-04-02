@@ -45,6 +45,12 @@ export function Header() {
           >
             Build Calc
           </Link>
+          <Link 
+            href="/sell" 
+            className={`px-3 py-2 text-sm font-medium transition-colors hidden md:block ${pathname.includes('/sell') ? 'text-orange-500' : 'text-[var(--gb-text-secondary)] hover:text-white'}`}
+          >
+            Sell
+          </Link>
         </nav>
       </div>
     </header>
